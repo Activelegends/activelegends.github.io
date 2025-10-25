@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { GameCard } from '../components/GameCard';
 import { AddGameModal } from '../components/AddGameModal';
+import { Helmet } from 'react-helmet-async';
 
 interface Game {
   id: string;
@@ -80,8 +81,21 @@ export const Games: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black pt-24">
-      <div className="container mx-auto px-4 md:px-8">
+    <>
+      <Helmet>
+        <title>بازی‌ها | Active Legend - مجموعه بازی‌های ایرانی</title>
+        <meta name="description" content="مجموعه کامل بازی‌های ایرانی و بین‌المللی در Active Legend. دانلود، بازی و تجربه بهترین بازی‌های موبایل و کامپیوتر." />
+        <meta name="keywords" content="بازی, گیم, بازی ایرانی, بازی موبایل, بازی کامپیوتر, دانلود بازی, Active Legend, بازی آنلاین, بازی آفلاین" />
+        <link rel="canonical" href="https://activelegend.ir/games" />
+        <meta property="og:title" content="بازی‌ها | Active Legend" />
+        <meta property="og:description" content="مجموعه کامل بازی‌های ایرانی و بین‌المللی در Active Legend" />
+        <meta property="og:url" content="https://activelegend.ir/games" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:title" content="بازی‌ها | Active Legend" />
+        <meta name="twitter:description" content="مجموعه کامل بازی‌های ایرانی و بین‌المللی در Active Legend" />
+      </Helmet>
+      <div className="min-h-screen bg-black pt-24">
+        <div className="container mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
           {games.map((game) => (
             <GameCard key={game.id} game={game} />
@@ -104,7 +118,8 @@ export const Games: React.FC = () => {
             />
           </>
         )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }; 

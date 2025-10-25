@@ -1,3 +1,18 @@
 User-agent: *
 Allow: /
-Sitemap: https://activelegend.ir/sitemap.xml 
+
+# Sitemap
+Sitemap: https://activelegend.ir/sitemap.xml
+
+# Disallow admin pages
+Disallow: /admin/
+Disallow: /team-admin/
+
+# Allow all other pages
+Allow: /games
+Allow: /about
+Allow: /contact
+Allow: /my-games
+Allow: /terms
+Allow: /game
+Allow: /download/

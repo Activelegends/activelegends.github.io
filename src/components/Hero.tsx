@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AuthModal } from './AuthModal';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 export default function Hero() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -24,7 +25,22 @@ export default function Hero() {
   };
 
   return (
-    <header className="relative min-h-screen flex items-center justify-center overflow-hidden scroll-container">
+    <>
+      <Helmet>
+        <title>Active Legend | استودیو بازی‌سازی و جامعه گیمرها</title>
+        <meta name="description" content="Active Legend - استودیو مستقل بازی‌سازی و جامعه آنلاین برای گیمرها و توسعه‌دهندگان ایرانی. بهترین بازی‌های موبایل و کامپیوتر." />
+        <meta name="keywords" content="Active Legend, بازی‌سازی, استودیو بازی, بازی ایرانی, بازی موبایل, بازی کامپیوتر, جامعه گیمرها, توسعه‌دهنده بازی" />
+        <link rel="canonical" href="https://activelegend.ir/" />
+        <meta property="og:title" content="Active Legend | استودیو بازی‌سازی و جامعه گیمرها" />
+        <meta property="og:description" content="استودیو مستقل بازی‌سازی و جامعه آنلاین برای گیمرها و توسعه‌دهندگان ایرانی" />
+        <meta property="og:url" content="https://activelegend.ir/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://activelegend.ir/AE%20logo.svg" />
+        <meta name="twitter:title" content="Active Legend | استودیو بازی‌سازی و جامعه گیمرها" />
+        <meta name="twitter:description" content="استودیو مستقل بازی‌سازی و جامعه آنلاین برای گیمرها و توسعه‌دهندگان ایرانی" />
+        <meta name="twitter:image" content="https://activelegend.ir/AE%20logo.svg" />
+      </Helmet>
+      <header className="relative min-h-screen flex items-center justify-center overflow-hidden scroll-container">
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/80 to-black/95"></div>
       
       <motion.div
@@ -109,6 +125,7 @@ export default function Hero() {
         onClose={() => setIsAuthModalOpen(false)}
         initialMode={authMode}
       />
-    </header>
+      </header>
+    </>
   );
 }

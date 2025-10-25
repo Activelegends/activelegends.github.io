@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:prerender": "npm run build && node scripts/prerender.js",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy": "npm run build",
+    "predeploy": "npm run build:prerender",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {

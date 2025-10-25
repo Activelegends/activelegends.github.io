@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { termsService } from '../services/termsService';
 import type { TermsAndConditions } from '../types/terms';
 import DOMPurify from 'dompurify';
+import { Helmet } from 'react-helmet-async';
 
 export default function TermsAndConditionsPage() {
   const { user } = useAuth();
@@ -88,7 +89,20 @@ export default function TermsAndConditionsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4 pt-24">
+    <>
+      <Helmet>
+        <title>قوانین و مقررات | Active Legend - شرایط استفاده</title>
+        <meta name="description" content="قوانین و مقررات استفاده از پلتفرم Active Legend. شرایط و ضوابط استفاده از خدمات بازی‌سازی و جامعه گیمرها." />
+        <meta name="keywords" content="قوانین, مقررات, شرایط استفاده, Active Legend, قوانین سایت, شرایط و ضوابط" />
+        <link rel="canonical" href="https://activelegend.ir/terms" />
+        <meta property="og:title" content="قوانین و مقررات | Active Legend" />
+        <meta property="og:description" content="قوانین و مقررات استفاده از پلتفرم Active Legend" />
+        <meta property="og:url" content="https://activelegend.ir/terms" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:title" content="قوانین و مقررات | Active Legend" />
+        <meta name="twitter:description" content="قوانین و مقررات استفاده از پلتفرم Active Legend" />
+      </Helmet>
+      <div className="max-w-4xl mx-auto p-4 pt-24">
       <div className="bg-white rounded-xl shadow-lg p-8 mb-8 border border-gray-100">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">{terms.title}</h1>
@@ -149,6 +163,7 @@ export default function TermsAndConditionsPage() {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 } 

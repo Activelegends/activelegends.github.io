@@ -3,21 +3,36 @@
   <url>
     <loc>https://activelegend.ir/</loc>
     <priority>1.0</priority>
+    <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://activelegend.ir/showcase</loc>
+    <loc>https://activelegend.ir/games</loc>
+    <priority>0.9</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://activelegend.ir/about</loc>
     <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://activelegend.ir/download</loc>
+    <loc>https://activelegend.ir/contact</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://activelegend.ir/my-games</loc>
     <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://activelegend.ir/terms</loc>
     <priority>0.6</priority>
+    <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>https://activelegend.ir/contact</loc>
+    <loc>https://activelegend.ir/game</loc>
     <priority>0.5</priority>
+    <changefreq>monthly</changefreq>
   </url>
 </urlset> 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import { GameCard } from '../components/GameCard';
+import { Helmet } from 'react-helmet-async';
 
 interface Game {
   id: string;
@@ -71,7 +72,20 @@ export const MyGames: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black p-4 md:p-8 pt-24">
+    <>
+      <Helmet>
+        <title>بازی‌های من | Active Legend - مجموعه شخصی بازی‌ها</title>
+        <meta name="description" content="مجموعه شخصی بازی‌های مورد علاقه شما در Active Legend. مدیریت و دسترسی آسان به بازی‌های محبوبتان." />
+        <meta name="keywords" content="بازی‌های من, علاقه‌مندی‌ها, مجموعه شخصی, Active Legend, بازی‌های محبوب" />
+        <link rel="canonical" href="https://activelegend.ir/my-games" />
+        <meta property="og:title" content="بازی‌های من | Active Legend" />
+        <meta property="og:description" content="مجموعه شخصی بازی‌های مورد علاقه شما در Active Legend" />
+        <meta property="og:url" content="https://activelegend.ir/my-games" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:title" content="بازی‌های من | Active Legend" />
+        <meta name="twitter:description" content="مجموعه شخصی بازی‌های مورد علاقه شما در Active Legend" />
+      </Helmet>
+      <div className="min-h-screen bg-black p-4 md:p-8 pt-24">
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -95,6 +109,7 @@ export const MyGames: React.FC = () => {
           بازی مورد علاقه‌ای اضافه نشده است.
         </motion.p>
       )}
-    </div>
+      </div>
+    </>
   );
 }; 

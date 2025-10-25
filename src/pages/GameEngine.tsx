@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Player from '../game/Player';
+import { Helmet } from 'react-helmet-async';
 // import logo from '../assets/AE-logo.svg'; // Uncomment and adjust path if logo exists
 
 const MODES = [
@@ -129,7 +130,20 @@ export default function GameEngine() {
   const [mode, setMode] = useState<'offline' | null>(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex flex-col items-center justify-center px-4 py-8">
+    <>
+      <Helmet>
+        <title>موتور بازی | Active Legend - بازی ۲بعدی تحت وب</title>
+        <meta name="description" content="موتور بازی ۲بعدی تحت وب Active Legend. تجربه بازی‌های آنلاین و آفلاین با گرافیک زیبا و عملکرد بالا." />
+        <meta name="keywords" content="موتور بازی, بازی ۲بعدی, بازی تحت وب, Active Legend, بازی آنلاین, بازی آفلاین, موتور بازی ایرانی" />
+        <link rel="canonical" href="https://activelegend.ir/game" />
+        <meta property="og:title" content="موتور بازی | Active Legend" />
+        <meta property="og:description" content="موتور بازی ۲بعدی تحت وب Active Legend" />
+        <meta property="og:url" content="https://activelegend.ir/game" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:title" content="موتور بازی | Active Legend" />
+        <meta name="twitter:description" content="موتور بازی ۲بعدی تحت وب Active Legend" />
+      </Helmet>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex flex-col items-center justify-center px-4 py-8">
       <motion.header
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -175,6 +189,7 @@ export default function GameEngine() {
         )}
         {mode === 'offline' && <OfflineGameArea />}
       </motion.main>
-    </div>
+      </div>
+    </>
   );
 } 
