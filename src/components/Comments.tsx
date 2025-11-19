@@ -12,7 +12,7 @@ interface CommentsProps {
 }
 
 export const Comments: React.FC<CommentsProps> = ({ gameId }) => {
-  const { user, session } = useAuth();
+  const { user } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,11 +55,11 @@ export const Comments: React.FC<CommentsProps> = ({ gameId }) => {
       setComments(data);
       
       // Load like states for each comment
-      if (session?.user?.id) {
+      if (user?.id) {
         const likeStates: Record<string, LikeState> = {};
         for (const comment of data) {
           try {
-            const hasLiked = await commentService.hasLiked(comment.id, session.user.id);
+            const hasLiked = await commentService.hasLiked(comment.id, user.id);
             likeStates[comment.id] = {
               liked: hasLiked,
               count: comment.likes_count || 0,
@@ -398,7 +398,7 @@ export const Comments: React.FC<CommentsProps> = ({ gameId }) => {
         </div>
       )}
       
-      {session?.user?.id ? (
+      {user?.id ? (
         <form onSubmit={handleSubmit} className="mb-8">
           <textarea
             value={newComment}

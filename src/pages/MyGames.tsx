@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
 import { GameCard } from '../components/GameCard';
 import { Helmet } from 'react-helmet-async';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Game {
   id: string;
@@ -25,12 +26,12 @@ interface Game {
 export const MyGames: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchFavoriteGames = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.user) {
+        if (!user) {
           setIsLoading(false);
           return;
         }
@@ -38,7 +39,7 @@ export const MyGames: React.FC = () => {
         const { data: favorites, error: favoritesError } = await supabase
           .from('favorites')
           .select('game_id')
-          .eq('user_id', session.user.id);
+          .eq('user_id', user.id);
 
         if (favoritesError) throw favoritesError;
 

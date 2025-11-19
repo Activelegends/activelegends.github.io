@@ -1,0 +1,15 @@
+{
+  "name": "activelegend-auth-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker for Google OAuth authentication",
+  "main": "src/auth.ts",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240125.0",
+    "wrangler": "^3.0.0"
+  }
+}

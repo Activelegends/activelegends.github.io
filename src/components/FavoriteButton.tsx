@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '../lib/supabaseClient';
+import { useAuth } from '../contexts/AuthContext';
 
 interface FavoriteButtonProps {
   gameId: string;
@@ -36,10 +37,11 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({ gameId, classNam
     };
   }, [gameId]);
 
+  const { user } = useAuth();
+
   const checkFavoriteStatus = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
+      if (!user) {
         setIsLoading(false);
         return;
       }
@@ -48,7 +50,7 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({ gameId, classNam
         .from('favorites')
         .select('id')
         .eq('game_id', gameId)
-        .eq('user_id', session.user.id)
+        .eq('user_id', user.id)
         .single();
 
       if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned" error
@@ -65,8 +67,7 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({ gameId, classNam
   const toggleFavorite = async () => {
     try {
       setIsLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
+      if (!user) {
         // Redirect to login or show login modal
         return;
       }
@@ -76,7 +77,7 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({ gameId, classNam
           .from('favorites')
           .delete()
           .eq('game_id', gameId)
-          .eq('user_id', session.user.id);
+          .eq('user_id', user.id);
 
         if (error) throw error;
         setIsFavorite(false);
@@ -84,7 +85,7 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({ gameId, classNam
         const { error } = await supabase
           .from('favorites')
           .insert([
-            { game_id: gameId, user_id: session.user.id }
+            { game_id: gameId, user_id: user.id }
           ]);
 
         if (error) throw error;
