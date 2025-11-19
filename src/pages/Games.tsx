@@ -3,7 +3,6 @@ import { supabase } from '../lib/supabaseClient';
 import { GameCard } from '../components/GameCard';
 import { AddGameModal } from '../components/AddGameModal';
 import { Helmet } from 'react-helmet-async';
-import { useAuth } from '../contexts/AuthContext';
 
 interface Game {
   id: string;
@@ -30,11 +29,11 @@ export const Games: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth();
 
   useEffect(() => {
-    const checkAdmin = () => {
-      setIsAdmin(user?.email === 'active.legendss@gmail.com');
+    const checkAdmin = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAdmin(session?.user?.email === 'active.legendss@gmail.com');
     };
 
     const fetchGames = async () => {

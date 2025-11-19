@@ -55,8 +55,8 @@ export function UserAvatar({ size = 'medium', showName = true, className = '' }:
   };
 
   // دسترسی مستقیم به اطلاعات کاربر از شیء user
-  const avatarUrl = user?.picture || '/images/default-avatar.svg';
-  const displayName = user?.name || user?.email?.split('@')[0] || 'مهمان';
+  const avatarUrl = user?.user_metadata?.avatar_url || '/images/default-avatar.svg';
+  const displayName = user?.user_metadata?.full_name || 'مهمان';
 
   // لاگ‌های دیباگ قبلی حذف شدند
   // console.log('آواتار نهایی:', avatarUrl);

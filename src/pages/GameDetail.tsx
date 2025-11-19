@@ -36,8 +36,9 @@ export const GameDetail: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkAdmin = () => {
-      setIsAdmin(user?.email === 'active.legendss@gmail.com');
+    const checkAdmin = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAdmin(session?.user?.email === 'active.legendss@gmail.com');
     };
 
     const fetchGame = async () => {

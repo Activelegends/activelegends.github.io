@@ -1,23 +1,24 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../lib/supabase';
 import { motion } from 'framer-motion';
-import { useAuth } from '../../contexts/AuthContext';
 
 export default function AuthCallback() {
   const navigate = useNavigate();
-  const { refreshUser } = useAuth();
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Wait a bit for the cookie to be set by the server
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        const { data: { session }, error } = await supabase.auth.getSession();
         
-        // Refresh user data from API
-        await refreshUser();
-        
-        // Redirect to home page after successful authentication
-        navigate('/', { replace: true });
+        if (error) {
+          throw error;
+        }
+
+        if (session) {
+          // Redirect to home page after successful authentication
+          navigate('/', { replace: true });
+        }
       } catch (error) {
         console.error('Error in auth callback:', error);
         // Redirect to home page even if there's an error
@@ -26,7 +27,7 @@ export default function AuthCallback() {
     };
 
     handleAuthCallback();
-  }, [navigate, refreshUser]);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
