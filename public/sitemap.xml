@@ -7,37 +7,37 @@
     <changefreq>daily</changefreq>
   </url>
   <url>
-    <loc>https://activelegend.ir/games</loc>
+    <loc>https://activelegend.ir/games/</loc>
     <lastmod>2025-02-24</lastmod>
     <priority>0.9</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://activelegend.ir/about</loc>
+    <loc>https://activelegend.ir/about/</loc>
     <lastmod>2025-02-24</lastmod>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://activelegend.ir/contact</loc>
+    <loc>https://activelegend.ir/contact/</loc>
     <lastmod>2025-02-24</lastmod>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://activelegend.ir/my-games</loc>
+    <loc>https://activelegend.ir/my-games/</loc>
     <lastmod>2025-02-24</lastmod>
     <priority>0.7</priority>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-    <loc>https://activelegend.ir/terms</loc>
+    <loc>https://activelegend.ir/terms/</loc>
     <lastmod>2025-02-24</lastmod>
     <priority>0.6</priority>
     <changefreq>yearly</changefreq>
   </url>
   <url>
-    <loc>https://activelegend.ir/game</loc>
+    <loc>https://activelegend.ir/game/</loc>
     <lastmod>2025-02-24</lastmod>
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>

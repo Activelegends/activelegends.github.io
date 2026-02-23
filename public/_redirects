@@ -1,1 +1,2 @@
+# SPA fallback: all routes return index.html with 200 (Netlify / Cloudflare Pages)
 /*    /index.html   200
