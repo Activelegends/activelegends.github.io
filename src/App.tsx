@@ -7,6 +7,7 @@ import { Games } from './pages/Games';
 import { GameDetail } from './pages/GameDetail';
 import NotFound from './pages/NotFound';
 import { AuthProvider } from './contexts/AuthContext';
+import { ProfileProvider } from './contexts/ProfileContext';
 import { useEffect, useState } from 'react';
 import { MyGames } from './pages/MyGames';
 import TermsAndConditionsPage from './pages/TermsAndConditions';
@@ -24,6 +25,7 @@ import BlogPage from './pages/Blog';
 import BlogPostPage from './pages/BlogPost';
 import BlogAdminPage from './pages/admin/BlogAdmin';
 import BlogCommentsAdminPage from './pages/admin/BlogCommentsAdmin';
+import ProfilePage from './pages/Profile';
 import CommentsAdminPage from './pages/admin/CommentsAdmin';
 import UsersAdminPage from './pages/admin/UsersAdmin';
 
@@ -55,6 +57,7 @@ function App() {
     <HelmetProvider>
     <Router>
       <AuthProvider>
+        <ProfileProvider>
         <div className="min-h-screen relative scroll-container">
           <AnimatedBackground />
           <div className="relative z-20">
@@ -81,6 +84,7 @@ function App() {
                 <Route path="/blog/:slug" element={<BlogPostPage />} />
                 <Route path="/admin/blog" element={<BlogAdminPage />} />
                 <Route path="/admin/blog-comments" element={<BlogCommentsAdminPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/admin/users" element={<UsersAdminPage />} />
                 <Route path="/admin/comments" element={<CommentsAdminPage />} />
               <Route path="*" element={<NotFound />} />
@@ -92,6 +96,7 @@ function App() {
               </div>
             )}
         </div>
+        </ProfileProvider>
       </AuthProvider>
     </Router>
     </HelmetProvider>

@@ -15,16 +15,26 @@ CREATE INDEX IF NOT EXISTS idx_blog_comments_created ON blog_comments(created_at
 
 ALTER TABLE blog_comments ENABLE ROW LEVEL SECURITY;
 
+-- دسترسی لازم برای نقش‌های anon و authenticated (الزامی برای رفع ارور RLS)
+GRANT SELECT, INSERT ON blog_comments TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON blog_comments TO authenticated;
+
 -- همه می‌توانند نظرات تأییدشده را ببینند
 DROP POLICY IF EXISTS "blog_comments_select_approved" ON blog_comments;
 CREATE POLICY "blog_comments_select_approved"
 ON blog_comments FOR SELECT TO anon, authenticated
 USING (is_approved = true);
 
--- همه (حتی مهمان) می‌توانند نظر بگذارند
-DROP POLICY IF EXISTS "blog_comments_insert_public" ON blog_comments;
-CREATE POLICY "blog_comments_insert_public"
-ON blog_comments FOR INSERT TO anon, authenticated
+-- مهمان (بدون لاگین) می‌تواند نظر بگذارد
+DROP POLICY IF EXISTS "blog_comments_insert_anon" ON blog_comments;
+CREATE POLICY "blog_comments_insert_anon"
+ON blog_comments FOR INSERT TO anon
+WITH CHECK (true);
+
+-- کاربر لاگین‌شده هم می‌تواند نظر بگذارد
+DROP POLICY IF EXISTS "blog_comments_insert_authenticated" ON blog_comments;
+CREATE POLICY "blog_comments_insert_authenticated"
+ON blog_comments FOR INSERT TO authenticated
 WITH CHECK (true);
 
 -- فقط لاگین‌شده (ادمین) برای ویرایش/حذف

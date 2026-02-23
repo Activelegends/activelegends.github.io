@@ -5,35 +5,109 @@ export interface BlogComment {
   blog_post_id: string;
   author_name: string;
   author_email: string;
+  author_image_url?: string | null;
   content: string;
   is_approved: boolean;
   created_at: string;
+  user_id?: string | null;
+  parent_id?: string | null;
+  replies?: BlogComment[];
+  likes_count?: number;
+  liked?: boolean;
 }
 
 export const blogCommentService = {
-  async getForPost(postId: string): Promise<BlogComment[]> {
-    const { data, error } = await supabase
+  async getForPost(postId: string, currentUserId?: string | null): Promise<BlogComment[]> {
+    const { data: rows, error } = await supabase
       .from('blog_comments')
       .select('*')
       .eq('blog_post_id', postId)
       .order('created_at', { ascending: true });
 
     if (error) throw error;
-    return (data || []) as BlogComment[];
+    const all = (rows || []) as BlogComment[];
+
+    const topLevel = all.filter((c) => !c.parent_id);
+    const byParent = new Map<string | null, BlogComment[]>();
+    all.forEach((c) => {
+      const key = c.parent_id ?? 'root';
+      if (!byParent.has(key)) byParent.set(key, []);
+      byParent.get(key)!.push(c);
+    });
+
+    const buildTree = (parentId: string | null): BlogComment[] =>
+      (byParent.get(parentId ?? 'root') || []).map((c) => ({
+        ...c,
+        replies: buildTree(c.id),
+      }));
+
+    const tree = buildTree(null);
+
+    const attachLikes = async (node: BlogComment): Promise<BlogComment> => ({
+      ...node,
+      likes_count: await this.getLikesCount(node.id),
+      liked: currentUserId ? await this.hasLiked(node.id, currentUserId) : false,
+      replies: await Promise.all((node.replies || []).map(attachLikes)),
+    });
+
+    return Promise.all(tree.map(attachLikes));
   },
 
-  async add(postId: string, payload: { author_name: string; author_email: string; content: string }): Promise<BlogComment> {
-    const { data, error } = await supabase
-      .from('blog_comments')
-      .insert({
-        blog_post_id: postId,
-        author_name: payload.author_name.trim(),
-        author_email: payload.author_email.trim(),
-        content: payload.content.trim(),
-      })
-      .select()
-      .single();
+  async getLikesCount(commentId: string): Promise<number> {
+    const { count, error } = await supabase
+      .from('blog_comment_likes')
+      .select('*', { count: 'exact', head: true })
+      .eq('comment_id', commentId);
+    if (error) throw error;
+    return count ?? 0;
+  },
 
+  async hasLiked(commentId: string, userId: string): Promise<boolean> {
+    const { data, error } = await supabase
+      .from('blog_comment_likes')
+      .select('id')
+      .eq('comment_id', commentId)
+      .eq('user_id', userId)
+      .maybeSingle();
+    if (error) throw error;
+    return !!data;
+  },
+
+  async toggleLike(commentId: string, userId: string): Promise<{ liked: boolean; count: number }> {
+    const liked = await this.hasLiked(commentId, userId);
+    if (liked) {
+      await supabase.from('blog_comment_likes').delete().eq('comment_id', commentId).eq('user_id', userId);
+      const count = await this.getLikesCount(commentId);
+      return { liked: false, count };
+    } else {
+      await supabase.from('blog_comment_likes').insert({ comment_id: commentId, user_id: userId });
+      const count = await this.getLikesCount(commentId);
+      return { liked: true, count };
+    }
+  },
+
+  async add(
+    postId: string,
+    payload: {
+      author_name: string;
+      author_email: string;
+      content: string;
+      user_id?: string | null;
+      parent_id?: string | null;
+      author_image_url?: string | null;
+    }
+  ): Promise<BlogComment> {
+    const insert: Record<string, unknown> = {
+      blog_post_id: postId,
+      author_name: payload.author_name.trim(),
+      author_email: payload.author_email.trim(),
+      content: payload.content.trim(),
+    };
+    if (payload.user_id) insert.user_id = payload.user_id;
+    if (payload.parent_id) insert.parent_id = payload.parent_id;
+    if (payload.author_image_url) insert.author_image_url = payload.author_image_url;
+
+    const { data, error } = await supabase.from('blog_comments').insert(insert).select().single();
     if (error) throw error;
     return data as BlogComment;
   },
@@ -49,10 +123,7 @@ export const blogCommentService = {
   },
 
   async updateApproved(id: string, is_approved: boolean): Promise<void> {
-    const { error } = await supabase
-      .from('blog_comments')
-      .update({ is_approved })
-      .eq('id', id);
+    const { error } = await supabase.from('blog_comments').update({ is_approved }).eq('id', id);
     if (error) throw error;
   },
 
