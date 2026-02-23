@@ -11,6 +11,7 @@ const ITEMS: AdminNavItem[] = [
   { to: '/admin/terms', label: 'مدیریت قوانین و مقررات' },
   { to: '/admin/blog', label: 'مدیریت بلاگ' },
   { to: '/admin/blog-comments', label: 'نظرات بلاگ' },
+  { to: '/admin/default-avatars', label: 'لوگوهای پیش‌فرض' },
   { to: '/admin/users', label: 'مدیریت کاربران' },
   { to: '/admin/comments', label: 'مدیریت نظرات' },
 ];

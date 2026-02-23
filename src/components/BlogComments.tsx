@@ -4,7 +4,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { faIR } from 'date-fns/locale';
 import { useAuth } from '../contexts/AuthContext';
 import { useProfile } from '../contexts/ProfileContext';
-import { FaThumbsUp, FaReply } from 'react-icons/fa';
+import { useDefaultAvatarUrls } from '../hooks/useDefaultAvatarUrls';
+import { pickDefaultAvatarUrl } from '../services/defaultAvatarsService';
 
 interface BlogCommentsProps {
   postId: string;
@@ -13,6 +14,7 @@ interface BlogCommentsProps {
 function CommentItem({
   c,
   currentUserId,
+  defaultAvatarUrls,
   onReply,
   onLike,
   onReplySubmit,
@@ -20,6 +22,7 @@ function CommentItem({
 }: {
   c: BlogComment;
   currentUserId: string | null;
+  defaultAvatarUrls: string[];
   onReply: (id: string) => void;
   onLike: (id: string) => void;
   onReplySubmit: (parentId: string, content: string) => void;
@@ -57,7 +60,7 @@ function CommentItem({
     }
   };
 
-  const avatarUrl = c.author_image_url || '/AE logo.svg';
+  const avatarUrl = c.author_image_url || pickDefaultAvatarUrl(c.author_email || c.id, defaultAvatarUrls);
 
   return (
     <li className={isReply ? 'mr-6 mt-3 border-r-2 border-white/10 pr-3' : ''}>
@@ -66,7 +69,7 @@ function CommentItem({
           src={avatarUrl}
           alt={c.author_name}
           className="w-9 h-9 rounded-full object-cover flex-shrink-0"
-          onError={(e) => { e.currentTarget.src = '/AE logo.svg'; }}
+          onError={(e) => { e.currentTarget.src = pickDefaultAvatarUrl(c.id, defaultAvatarUrls) || '/AE logo.svg'; }}
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
@@ -124,6 +127,7 @@ function CommentItem({
               key={r.id}
               c={r}
               currentUserId={currentUserId}
+              defaultAvatarUrls={defaultAvatarUrls}
               onReply={onReply}
               onLike={onLike}
               onReplySubmit={onReplySubmit}
@@ -139,6 +143,7 @@ function CommentItem({
 export default function BlogComments({ postId }: BlogCommentsProps) {
   const { user } = useAuth();
   const { profile } = useProfile();
+  const defaultAvatarUrls = useDefaultAvatarUrls();
   const [comments, setComments] = useState<BlogComment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -281,6 +286,7 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
               key={c.id}
               c={c}
               currentUserId={user?.id ?? null}
+              defaultAvatarUrls={defaultAvatarUrls}
               onReply={() => {}}
               onLike={handleLike}
               onReplySubmit={handleReplySubmit}

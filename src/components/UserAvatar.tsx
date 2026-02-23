@@ -1,5 +1,7 @@
 import { useAuth } from '../contexts/AuthContext';
 import { useProfile } from '../contexts/ProfileContext';
+import { useDefaultAvatarUrls } from '../hooks/useDefaultAvatarUrls';
+import { pickDefaultAvatarUrl } from '../services/defaultAvatarsService';
 
 interface UserAvatarProps {
   size?: 'small' | 'medium' | 'large';
@@ -10,6 +12,7 @@ interface UserAvatarProps {
 export function UserAvatar({ size = 'medium', showName = true, className = '' }: UserAvatarProps) {
   const { user } = useAuth();
   const { profile } = useProfile();
+  const defaultAvatarUrls = useDefaultAvatarUrls();
 
   const sizeClasses = {
     small: 'w-8 h-8',
@@ -17,7 +20,8 @@ export function UserAvatar({ size = 'medium', showName = true, className = '' }:
     large: 'w-12 h-12'
   };
 
-  const avatarUrl = profile?.profile_image_url || user?.user_metadata?.avatar_url || '/images/default-avatar.svg';
+  const profileOrMetaUrl = profile?.profile_image_url || user?.user_metadata?.avatar_url;
+  const avatarUrl = profileOrMetaUrl || (defaultAvatarUrls.length ? pickDefaultAvatarUrl(user?.id ?? user?.email ?? '', defaultAvatarUrls) : '/AE logo.svg');
   const displayName = profile?.display_name?.trim() || user?.user_metadata?.full_name || 'مهمان';
 
   // لاگ‌های دیباگ قبلی حذف شدند
@@ -32,8 +36,7 @@ export function UserAvatar({ size = 'medium', showName = true, className = '' }:
         alt={displayName}
         className={`${sizeClasses[size]} rounded-full object-cover border-2 border-gray-200`}
         onError={(e) => {
-          console.error('خطا در بارگذاری تصویر:', e);
-          e.currentTarget.src = '/images/default-avatar.svg';
+          e.currentTarget.src = defaultAvatarUrls.length ? pickDefaultAvatarUrl(user?.id ?? '', defaultAvatarUrls) : '/AE logo.svg';
         }}
       />
       {showName && (
