@@ -21,6 +21,9 @@ import About from './pages/About';
 import TeamAdmin from './pages/TeamAdmin';
 import GameEngine from './pages/GameEngine';
 import { HelmetProvider } from 'react-helmet-async';
+import BlogPage from './pages/Blog';
+import BlogPostPage from './pages/BlogPost';
+import BlogAdminPage from './pages/admin/BlogAdmin';
 
 function App() {
   const [showFooter, setShowFooter] = useState(false);
@@ -72,6 +75,9 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/game" element={<GameEngine />} />
                 <Route path="/team-admin" element={<TeamAdmin />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/blog/:slug" element={<BlogPostPage />} />
+                <Route path="/admin/blog" element={<BlogAdminPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>

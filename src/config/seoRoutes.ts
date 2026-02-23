@@ -19,6 +19,7 @@ export const SEO_ROUTES: SeoRoute[] = [
   { path: '/my-games', priority: 0.7, changefreq: 'weekly' },
   { path: '/terms', priority: 0.6, changefreq: 'yearly' },
   { path: '/game', priority: 0.5, changefreq: 'monthly' },
+  { path: '/blog', priority: 0.7, changefreq: 'weekly' },
 ];
 
 export { SITE_URL };

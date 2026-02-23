@@ -42,4 +42,10 @@
     <priority>0.5</priority>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://activelegend.ir/blog/</loc>
+    <lastmod>2025-02-24</lastmod>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
 </urlset> 
