@@ -4,10 +4,20 @@ import { defaultAvatarsService } from '../services/defaultAvatarsService';
 export function useDefaultAvatarUrls(): string[] {
   const [urls, setUrls] = useState<string[]>([]);
   useEffect(() => {
-    defaultAvatarsService
-      .getList()
-      .then((list) => setUrls(list.map((a) => a.url)))
-      .catch(() => setUrls([]));
+    let cancelled = false;
+    try {
+      defaultAvatarsService
+        .getList()
+        .then((list) => {
+          if (!cancelled && Array.isArray(list)) setUrls(list.map((a) => (a && a.url) ? a.url : '').filter(Boolean));
+        })
+        .catch(() => {
+          if (!cancelled) setUrls([]);
+        });
+    } catch {
+      setUrls([]);
+    }
+    return () => { cancelled = true; };
   }, []);
   return urls;
 }

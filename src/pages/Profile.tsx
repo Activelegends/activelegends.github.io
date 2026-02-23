@@ -150,7 +150,7 @@ export default function ProfilePage() {
               </form>
 
               <form onSubmit={handleSaveName} className="space-y-3">
-                <label className="block text-sm text-gray-300">نام نمایشی (مثل تلگرام)</label>
+                <label className="block text-sm text-gray-300">نام نمایشی</label>
                 <input
                   type="text"
                   value={displayName}

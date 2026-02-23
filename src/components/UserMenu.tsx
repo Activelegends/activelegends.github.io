@@ -144,7 +144,7 @@ export default function UserMenu() {
                   } group flex w-full items-center rounded-md px-3 py-2 text-sm text-white gap-2`}
                 >
                   <HiUser className="w-5 h-5" />
-                  پروفایل من (اسم و عکس)
+                  پروفایل من
                 </Link>
               )}
             </Menu.Item>

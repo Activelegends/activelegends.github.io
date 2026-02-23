@@ -91,7 +91,8 @@ export const blogCommentService = {
         replies: await Promise.all((node.replies || []).map(attachLikes)),
       });
 
-      return Promise.all(tree.map(attachLikes));
+      const withLikes = await Promise.all(tree.map(attachLikes));
+      return withLikes;
     } catch (e) {
       console.error('getForPost error', e);
       return [];

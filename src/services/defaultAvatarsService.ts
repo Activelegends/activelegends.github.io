@@ -38,13 +38,14 @@ export const defaultAvatarsService = {
 };
 
 /** انتخاب یک لوگوی پیش‌فرض بر اساس شناسه (مثلاً ایمیل یا id نظر) تا همیشه یکسان باشد */
-export function pickDefaultAvatarUrl(identifier: string, urls: string[]): string {
-  if (!urls.length) return '/AE logo.svg';
+export function pickDefaultAvatarUrl(identifier: string, urls: string[] | undefined | null): string {
+  if (!urls || !Array.isArray(urls) || urls.length === 0) return '/AE logo.svg';
+  const id = String(identifier || '');
   let hash = 0;
-  for (let i = 0; i < identifier.length; i++) {
-    hash = (hash << 5) - hash + identifier.charCodeAt(i);
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash << 5) - hash + id.charCodeAt(i);
     hash |= 0;
   }
   const index = Math.abs(hash) % urls.length;
-  return urls[index];
+  return urls[index] || '/AE logo.svg';
 }

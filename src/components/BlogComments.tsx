@@ -62,7 +62,16 @@ function CommentItem({
 
   const avatarUrl = (c.author_image_url || pickDefaultAvatarUrl(c.author_email || c.id, defaultAvatarUrls)) || '/AE logo.svg';
   const safeName = c.author_name ?? 'ناشناس';
-  const safeDate = c.created_at ? formatDistanceToNow(new Date(c.created_at), { addSuffix: true, locale: faIR }) : '';
+  let safeDate = '';
+  try {
+    if (c.created_at) {
+      const d = new Date(c.created_at);
+      if (!Number.isNaN(d.getTime())) safeDate = formatDistanceToNow(d, { addSuffix: true, locale: faIR });
+    }
+  } catch {
+    safeDate = '';
+  }
+  const safeDefaultUrls = Array.isArray(defaultAvatarUrls) ? defaultAvatarUrls : [];
 
   return (
     <li className={isReply ? 'mr-6 mt-3 border-r-2 border-white/10 pr-3' : ''}>
@@ -71,7 +80,7 @@ function CommentItem({
           src={avatarUrl}
           alt={safeName}
           className="w-9 h-9 rounded-full object-cover flex-shrink-0"
-          onError={(e) => { e.currentTarget.src = (defaultAvatarUrls.length ? pickDefaultAvatarUrl(c.id, defaultAvatarUrls) : null) || '/AE logo.svg'; }}
+          onError={(e) => { e.currentTarget.src = (safeDefaultUrls.length ? pickDefaultAvatarUrl(c.id, safeDefaultUrls) : null) || '/AE logo.svg'; }}
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
@@ -129,7 +138,7 @@ function CommentItem({
               key={r.id}
               c={r}
               currentUserId={currentUserId}
-              defaultAvatarUrls={defaultAvatarUrls}
+              defaultAvatarUrls={safeDefaultUrls}
               onReply={onReply}
               onLike={onLike}
               onReplySubmit={onReplySubmit}
@@ -146,6 +155,7 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
   const { user } = useAuth();
   const { profile } = useProfile();
   const defaultAvatarUrls = useDefaultAvatarUrls();
+  const safeDefaultAvatarUrls = Array.isArray(defaultAvatarUrls) ? defaultAvatarUrls : [];
   const [comments, setComments] = useState<BlogComment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -289,7 +299,7 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
               key={c.id}
               c={c}
               currentUserId={user?.id ?? null}
-              defaultAvatarUrls={defaultAvatarUrls}
+              defaultAvatarUrls={safeDefaultAvatarUrls}
               onReply={() => {}}
               onLike={handleLike}
               onReplySubmit={handleReplySubmit}
