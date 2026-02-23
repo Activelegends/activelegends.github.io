@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import DOMPurify from 'dompurify';
 import { blogService, blogAdsService, type BlogPost, type BlogAd } from '../services/blogService';
 import BlogComments from '../components/BlogComments';
+import { BlogCommentsErrorBoundary } from '../components/BlogCommentsErrorBoundary';
 import AdSnippet from '../components/AdSnippet';
 
 export default function BlogPostPage() {
@@ -165,7 +166,9 @@ export default function BlogPostPage() {
               <AdSnippet html={inlineAds[1].html_snippet} className="ad-container ad-container-text mt-6" />
             )}
 
+            <BlogCommentsErrorBoundary>
             <BlogComments postId={post.id} />
+          </BlogCommentsErrorBoundary>
           </article>
 
           {relatedPosts.length > 0 && (

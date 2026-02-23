@@ -18,56 +18,84 @@ export interface BlogComment {
 
 export const blogCommentService = {
   async getForPost(postId: string, currentUserId?: string | null): Promise<BlogComment[]> {
-    const { data: rows, error } = await supabase
-      .from('blog_comments')
-      .select('*')
-      .eq('blog_post_id', postId)
-      .order('created_at', { ascending: true });
+    try {
+      const { data: rows, error } = await supabase
+        .from('blog_comments')
+        .select('*')
+        .eq('blog_post_id', postId)
+        .order('created_at', { ascending: true });
 
-    if (error) throw error;
-    const all = (rows || []) as BlogComment[];
+      if (error) throw error;
+      const all = (rows || []) as BlogComment[];
+      if (!Array.isArray(all)) return [];
 
-    const byParent = new Map<string, BlogComment[]>();
-    all.forEach((c) => {
-      const key = c.parent_id ?? 'root';
-      if (!byParent.has(key)) byParent.set(key, []);
-      byParent.get(key)!.push(c);
-    });
+      const byParent = new Map<string, BlogComment[]>();
+      all.forEach((c) => {
+        if (!c || !c.id) return;
+        const key = c.parent_id ?? 'root';
+        if (!byParent.has(key)) byParent.set(key, []);
+        byParent.get(key)!.push(c);
+      });
 
-    const MAX_DEPTH = 10;
-    const buildTree = (parentKey: string, depth: number): BlogComment[] => {
-      if (depth > MAX_DEPTH) return [];
-      return (byParent.get(parentKey) || []).map((c) => ({
-        ...c,
-        replies: buildTree(c.id, depth + 1),
-      }));
-    };
+      const MAX_DEPTH = 10;
+      const seen = new Set<string>();
+      const buildTree = (parentKey: string, depth: number): BlogComment[] => {
+        if (depth > MAX_DEPTH) return [];
+        const children = byParent.get(parentKey) || [];
+        return children
+          .filter((c) => c && c.id && !seen.has(c.id))
+          .map((c) => {
+            seen.add(c.id);
+            return {
+              ...c,
+              replies: buildTree(c.id, depth + 1),
+            };
+          });
+      };
 
-    const tree = buildTree('root', 0);
+      const tree = buildTree('root', 0);
 
-    const safeGetLikesCount = async (id: string): Promise<number> => {
+      // اگر جدول blog_comment_likes وجود نداشته باشد، یک بار امتحان می‌کنیم و در صورت خطا اصلاً لایک نمی‌خوانیم
+      let likesAvailable = false;
       try {
-        return await this.getLikesCount(id);
+        const { error: likeError } = await supabase
+          .from('blog_comment_likes')
+          .select('id')
+          .limit(1);
+        likesAvailable = !likeError;
       } catch {
-        return 0;
+        likesAvailable = false;
       }
-    };
-    const safeHasLiked = async (id: string, uid: string): Promise<boolean> => {
-      try {
-        return await this.hasLiked(id, uid);
-      } catch {
-        return false;
-      }
-    };
 
-    const attachLikes = async (node: BlogComment): Promise<BlogComment> => ({
-      ...node,
-      likes_count: await safeGetLikesCount(node.id),
-      liked: currentUserId ? await safeHasLiked(node.id, currentUserId) : false,
-      replies: await Promise.all((node.replies || []).map(attachLikes)),
-    });
+      const safeGetLikesCount = async (id: string): Promise<number> => {
+        if (!likesAvailable) return 0;
+        try {
+          return await this.getLikesCount(id);
+        } catch {
+          return 0;
+        }
+      };
+      const safeHasLiked = async (id: string, uid: string): Promise<boolean> => {
+        if (!likesAvailable || !uid) return false;
+        try {
+          return await this.hasLiked(id, uid);
+        } catch {
+          return false;
+        }
+      };
 
-    return Promise.all(tree.map(attachLikes));
+      const attachLikes = async (node: BlogComment): Promise<BlogComment> => ({
+        ...node,
+        likes_count: await safeGetLikesCount(node.id),
+        liked: currentUserId ? await safeHasLiked(node.id, currentUserId) : false,
+        replies: await Promise.all((node.replies || []).map(attachLikes)),
+      });
+
+      return Promise.all(tree.map(attachLikes));
+    } catch (e) {
+      console.error('getForPost error', e);
+      return [];
+    }
   },
 
   async getLikesCount(commentId: string): Promise<number> {
