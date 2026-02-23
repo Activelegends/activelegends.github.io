@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import { supabase } from '../lib/supabaseClient';
 import { ContentBlock } from '../components/ContentBlock';
 import { EditGameModal } from '../components/EditGameModal';
@@ -103,8 +103,34 @@ export const GameDetail: React.FC = () => {
     );
   }
 
+  const canonicalUrl = `https://activelegend.ir/games/${game.slug}`;
+  const gameJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    name: game.title,
+    description: game.description,
+    image: game.image_icon,
+    url: canonicalUrl,
+    author: { '@type': 'Organization', name: 'Active Legend', url: 'https://activelegend.ir' },
+  };
+
   return (
     <div className="min-h-screen bg-black pt-24 md:pt-28">
+      <Helmet>
+        <title>{`${game.title} | Active Legend - بازی‌ها`}</title>
+        <meta name="description" content={game.description || `${game.title} - دانلود و اطلاعات بازی از Active Legend`} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:title" content={`${game.title} | Active Legend`} />
+        <meta property="og:description" content={game.description || game.title} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={game.image_icon} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${game.title} | Active Legend`} />
+        <meta name="twitter:description" content={game.description || game.title} />
+        <meta name="twitter:image" content={game.image_icon} />
+      </Helmet>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(gameJsonLd) }} />
       <div className="max-w-4xl mx-auto p-4 md:p-8">
         <div className="mb-8">
           <h1 className="text-3xl font-extrabold text-white mb-4">{game.title}</h1>

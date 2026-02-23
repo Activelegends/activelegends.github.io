@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { downloadLinksService } from '../services/downloadLinksService';
 import type { DownloadLink } from '../services/downloadLinksService';
 
@@ -107,10 +108,20 @@ export default function DownloadPage() {
     );
   }
 
+  const pageTitle = link?.title ? `${link.title} | دانلود | Active Legend` : 'دانلود فایل | Active Legend';
+  const pageDescription = link?.title
+    ? `دانلود ${link.title} از Active Legend. لینک مستقیم دانلود.`
+    : 'صفحه دانلود فایل از Active Legend.';
+
   return (
     <div className={`min-h-screen flex flex-col items-center justify-center px-4 py-12 transition-all duration-1000 ${
       showContent ? 'bg-white' : 'bg-black'
     }`}>
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
       <div className={`w-full transition-all duration-1000 ${
         showContent 
           ? 'max-w-4xl bg-white border border-gray-200 rounded-2xl shadow-xl p-12' 

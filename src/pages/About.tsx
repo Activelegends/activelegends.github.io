@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Gamepad, Users, Rocket } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { Helmet } from 'react-helmet-async';
 
@@ -47,6 +47,7 @@ export default function About() {
         <title>درباره اکتیو لجند | Active Legend - استودیو بازی‌سازی و جامعه گیمرها</title>
         <meta name="description" content="درباره اکتیو لجند (Active Legend)؛ استودیو بازی‌سازی و جامعه آنلاین گیمرها و توسعه‌دهندگان ایرانی. معرفی تیم، اهداف، مأموریت و چشم‌انداز ما در صنعت گیم ایران." />
         <meta name="keywords" content="اکتیو لجند, Active Legend, بازی, گیم, استودیو بازی‌سازی, تیم بازی‌سازی, Game Studio, Game Development, گیمر, بازی ایرانی, بازی موبایل, بازی کامپیوتر, بازی آنلاین, بازی آفلاین, تیم اکتیو لجند, about active legend" />
+        <link rel="canonical" href="https://activelegend.ir/about" />
         <meta property="og:title" content="درباره اکتیو لجند | Active Legend" />
         <meta property="og:description" content="معرفی استودیو بازی‌سازی اکتیو لجند (Active Legend) و تیم توسعه‌دهنده بازی‌های ایرانی." />
         <meta property="og:type" content="website" />
@@ -57,6 +58,25 @@ export default function About() {
         <meta name="twitter:description" content="استودیو بازی‌سازی اکتیو لجند (Active Legend) و جامعه گیمرها و توسعه‌دهندگان ایرانی." />
         <meta name="twitter:image" content="https://activelegend.ir/AE%20logo.svg" />
       </Helmet>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: 'Active Legend',
+            url: 'https://activelegend.ir',
+            logo: 'https://activelegend.ir/AE%20logo.svg',
+            description: 'استودیو مستقل بازی‌سازی و جامعه آنلاین برای گیمرها و توسعه‌دهندگان ایرانی.',
+            sameAs: [
+              'https://t.me/ActiveLegend_ir',
+              'https://www.instagram.com/activelegend.ir',
+              'https://www.youtube.com/@ActiveLegend',
+              'https://discord.gg/w7pqAwJfta',
+            ],
+          }),
+        }}
+      />
       <motion.h1
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}

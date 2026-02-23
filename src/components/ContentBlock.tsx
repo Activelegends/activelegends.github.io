@@ -51,7 +51,7 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({ block, index }) => {
       return (
         <img
           src={block.src}
-          alt={block.alt}
+          alt={block.alt || block.caption || 'تصویر مرتبط با محتوا'}
           className="w-full md:w-3/4 rounded-2xl shadow-xl object-cover"
         />
       );

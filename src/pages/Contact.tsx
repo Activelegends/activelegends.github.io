@@ -71,6 +71,7 @@ export default function Contact() {
         <title>تماس با اکتیو لجند | Active Legend - ارتباط با تیم بازی‌سازی</title>
         <meta name="description" content="تماس با اکتیو لجند (Active Legend)؛ راه‌های ارتباط با تیم بازی‌سازی و جامعه گیمرها. پشتیبانی، ایمیل، تلگرام، اینستاگرام، دیسکورد و یوتیوب." />
         <meta name="keywords" content="تماس با ما, اکتیو لجند, Active Legend, ارتباط, Game Studio, support, پشتیبانی, بازی, گیم, استودیو بازی‌سازی, تیم بازی‌سازی, گیمر, بازی ایرانی, تماس active legend, contact active legend" />
+        <link rel="canonical" href="https://activelegend.ir/contact" />
         <meta property="og:title" content="تماس با اکتیو لجند | Active Legend" />
         <meta property="og:description" content="راه‌های ارتباط با استودیو بازی‌سازی اکتیو لجند (Active Legend) و تیم توسعه‌دهنده." />
         <meta property="og:type" content="website" />

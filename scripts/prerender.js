@@ -5,16 +5,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Routes to prerender
-const routes = [
-  '/',
-  '/games',
-  '/about',
-  '/contact',
-  '/my-games',
-  '/terms',
-  '/game'
-];
+// Routes from single source of truth (add new public pages here)
+const routesConfig = JSON.parse(readFileSync(join(__dirname, 'seo-routes.json'), 'utf8'));
+const routes = routesConfig.map((r) => r.path);
 
 // Read the built index.html
 const indexPath = join(__dirname, '../dist/index.html');

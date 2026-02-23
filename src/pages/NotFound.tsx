@@ -1,11 +1,18 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 export default function NotFound() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
+      <Helmet>
+        <title>صفحه یافت نشد (۴۰۴) | Active Legend</title>
+        <meta name="description" content="صفحه مورد نظر یافت نشد. بازگشت به صفحه اصلی Active Legend." />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="canonical" href="https://activelegend.ir/" />
+      </Helmet>
       <div className="text-center">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}

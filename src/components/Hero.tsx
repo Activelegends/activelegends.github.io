@@ -40,6 +40,24 @@ export default function Hero() {
         <meta name="twitter:description" content="استودیو مستقل بازی‌سازی و جامعه آنلاین برای گیمرها و توسعه‌دهندگان ایرانی" />
         <meta name="twitter:image" content="https://activelegend.ir/AE%20logo.svg" />
       </Helmet>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'Active Legend',
+            url: 'https://activelegend.ir',
+            description: 'استودیو مستقل بازی‌سازی و جامعه آنلاین برای گیمرها و توسعه‌دهندگان ایرانی.',
+            publisher: {
+              '@type': 'Organization',
+              name: 'Active Legend',
+              logo: { '@type': 'ImageObject', url: 'https://activelegend.ir/AE%20logo.svg' },
+            },
+            potentialAction: { '@type': 'SearchAction', target: 'https://activelegend.ir/games', 'query-input': 'required name=slug' },
+          }),
+        }}
+      />
       <header className="relative min-h-screen flex items-center justify-center overflow-hidden scroll-container">
       <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/80 to-black/95"></div>
       
