@@ -3,6 +3,8 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import DOMPurify from 'dompurify';
 import { blogService, blogAdsService, type BlogPost, type BlogAd } from '../services/blogService';
+import BlogComments from '../components/BlogComments';
+import AdSnippet from '../components/AdSnippet';
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -10,6 +12,7 @@ export default function BlogPostPage() {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [inlineAds, setInlineAds] = useState<BlogAd[]>([]);
+  const [sidebarAds, setSidebarAds] = useState<BlogAd[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,12 +28,14 @@ export default function BlogPostPage() {
           return;
         }
         setPost(p);
-        const [related, ads] = await Promise.all([
+        const [related, inline, sidebar] = await Promise.all([
           blogService.getRelatedPosts(p.id, p.tags || [], 3),
           blogAdsService.getAdsForPosition('inline'),
+          blogAdsService.getAdsForPosition('sidebar'),
         ]);
         setRelatedPosts(related);
-        setInlineAds(ads);
+        setInlineAds(inline);
+        setSidebarAds(sidebar);
       } catch (err: any) {
         console.error('Error loading blog post', err);
         setError('خطا در بارگذاری پست');
@@ -113,7 +118,9 @@ export default function BlogPostPage() {
         />
       )}
       <div className="min-h-screen bg-black pt-20 md:pt-24 pb-12 md:pb-16 overflow-x-hidden">
-        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 lg:gap-8">
+            <div className="min-w-0">
           <article className="bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-7 shadow-lg mb-8 md:mb-10 min-w-0">
             <header className="mb-6">
               <h1 className="text-2xl md:text-3xl font-extrabold text-white mb-3">
@@ -143,10 +150,7 @@ export default function BlogPostPage() {
 
             {/* Inline ad before content */}
             {inlineAds[0] && (
-              <div
-                className="ad-container ad-container-text mb-6"
-                dangerouslySetInnerHTML={{ __html: inlineAds[0].html_snippet }}
-              />
+              <AdSnippet html={inlineAds[0].html_snippet} className="ad-container ad-container-text mb-6" />
             )}
 
             <section
@@ -158,11 +162,10 @@ export default function BlogPostPage() {
 
             {/* Inline ad after content */}
             {inlineAds[1] && (
-              <div
-                className="ad-container ad-container-text mt-6"
-                dangerouslySetInnerHTML={{ __html: inlineAds[1].html_snippet }}
-              />
+              <AdSnippet html={inlineAds[1].html_snippet} className="ad-container ad-container-text mt-6" />
             )}
+
+            <BlogComments postId={post.id} />
           </article>
 
           {relatedPosts.length > 0 && (
@@ -185,6 +188,20 @@ export default function BlogPostPage() {
               </div>
             </section>
           )}
+            </div>
+
+            {sidebarAds.length > 0 && (
+              <aside className="space-y-4 min-w-0 hidden lg:block">
+                {sidebarAds.map((ad) => (
+                  <AdSnippet
+                    key={ad.id}
+                    html={ad.html_snippet}
+                    className="ad-container ad-container-text ad-container-sidebar"
+                  />
+                ))}
+              </aside>
+            )}
+          </div>
         </div>
       </div>
     </>

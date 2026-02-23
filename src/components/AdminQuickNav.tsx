@@ -10,6 +10,7 @@ const ITEMS: AdminNavItem[] = [
   { to: '/team-admin', label: 'مدیریت اعضای تیم' },
   { to: '/admin/terms', label: 'مدیریت قوانین و مقررات' },
   { to: '/admin/blog', label: 'مدیریت بلاگ' },
+  { to: '/admin/blog-comments', label: 'نظرات بلاگ' },
   { to: '/admin/users', label: 'مدیریت کاربران' },
   { to: '/admin/comments', label: 'مدیریت نظرات' },
 ];

@@ -26,6 +26,15 @@ body, html, * {
   font-family: 'Vazirmatn', 'Shabnam', sans-serif;
 }
 
+/* تبلیغات ویژه (مثل یکتانت) — فضای کافی و اجازه نمایش اسکریپت/iframe */
+.ad-container-special {
+  min-height: 180px;
+  overflow: visible;
+}
+.ad-container-sidebar {
+  min-height: 100px;
+}
+
 #root {
   max-width: 1440px;
   margin: 0 auto;

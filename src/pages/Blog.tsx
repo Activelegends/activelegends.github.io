@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { blogService, blogAdsService, type BlogPost, type BlogAd } from '../services/blogService';
+import AdSnippet from '../components/AdSnippet';
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -48,6 +49,7 @@ export default function BlogPage() {
   }, [posts, selectedTag]);
 
   const heroAds = ads.filter((a) => a.position === 'hero' || a.position === 'special');
+  const sidebarAds = ads.filter((a) => a.position === 'sidebar');
 
   return (
     <>
@@ -122,10 +124,18 @@ export default function BlogPage() {
                   </div>
                   <aside className="space-y-4 min-w-0">
                     {heroAds.map((ad) => (
-                      <div
+                      <AdSnippet
                         key={ad.id}
-                        className="ad-container ad-container-text"
-                        dangerouslySetInnerHTML={{ __html: ad.html_snippet }}
+                        html={ad.html_snippet}
+                        position={ad.position}
+                        className={ad.position === 'special' ? 'ad-container ad-container-text ad-container-special' : 'ad-container ad-container-text'}
+                      />
+                    ))}
+                    {sidebarAds.map((ad) => (
+                      <AdSnippet
+                        key={ad.id}
+                        html={ad.html_snippet}
+                        className="ad-container ad-container-text ad-container-sidebar"
                       />
                     ))}
                   </aside>

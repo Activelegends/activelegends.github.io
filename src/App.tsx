@@ -23,6 +23,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import BlogPage from './pages/Blog';
 import BlogPostPage from './pages/BlogPost';
 import BlogAdminPage from './pages/admin/BlogAdmin';
+import BlogCommentsAdminPage from './pages/admin/BlogCommentsAdmin';
 import CommentsAdminPage from './pages/admin/CommentsAdmin';
 import UsersAdminPage from './pages/admin/UsersAdmin';
 
@@ -79,6 +80,7 @@ function App() {
                 <Route path="/blog" element={<BlogPage />} />
                 <Route path="/blog/:slug" element={<BlogPostPage />} />
                 <Route path="/admin/blog" element={<BlogAdminPage />} />
+                <Route path="/admin/blog-comments" element={<BlogCommentsAdminPage />} />
                 <Route path="/admin/users" element={<UsersAdminPage />} />
                 <Route path="/admin/comments" element={<CommentsAdminPage />} />
               <Route path="*" element={<NotFound />} />
