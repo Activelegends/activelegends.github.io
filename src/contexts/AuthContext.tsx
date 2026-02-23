@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (error.message.includes('Invalid login credentials')) {
       throw new Error('ایمیل یا رمز عبور اشتباه است.');
     } else if (error.message.includes('Email not confirmed')) {
-      throw new Error('لطفاً ایمیل خود را تایید کنید.');
+      throw new Error('حساب شما هنوز تأیید نشده. لینک تأیید را در ایمیل خود بزنید و سپس دوباره وارد شوید.');
     } else if (error.message.includes('User already registered')) {
       throw new Error('این ایمیل قبلاً ثبت شده است.');
     } else {

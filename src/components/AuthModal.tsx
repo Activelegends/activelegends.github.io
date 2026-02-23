@@ -132,6 +132,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                     ? 'به Active Legend خوش آمدید'
                     : 'حساب کاربری جدید بسازید'}
               </p>
+              {isLogin && (
+                <p className="text-gray-500 text-xs mt-1">
+                  اگر تازه با ایمیل ثبت‌نام کردید، اول لینک تأیید داخل ایمیل را بزنید و بعد وارد شوید.
+                </p>
+              )}
             </div>
 
             {success ? (

@@ -16,6 +16,7 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [avatarUrlInput, setAvatarUrlInput] = useState('');
 
   useEffect(() => {
     if (profile?.display_name !== undefined) setDisplayName(profile.display_name ?? '');
@@ -58,9 +59,30 @@ export default function ProfilePage() {
       await userProfileService.updateProfile(user.id, { profile_image_url: urlData.publicUrl });
       await refreshProfile();
     } catch (err: any) {
-      setError(err.message || 'خطا در آپلود تصویر');
+      const msg = err?.message || '';
+      if (msg.toLowerCase().includes('bucket') && msg.toLowerCase().includes('not found')) {
+        setError('باكت آواتار در Supabase ساخته نشده. در Supabase → Storage یک باکت با نام «avatars» بسازید و آن را Public کنید، یا از کادر «آدرس تصویر» زیر استفاده کنید.');
+      } else {
+        setError(err.message || 'خطا در آپلود تصویر');
+      }
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleSaveAvatarUrl = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!avatarUrlInput.trim() || !user?.id) return;
+    setSaving(true);
+    setError(null);
+    try {
+      await userProfileService.updateProfile(user.id, { profile_image_url: avatarUrlInput.trim() });
+      await refreshProfile();
+      setAvatarUrlInput('');
+    } catch (err: any) {
+      setError(err.message || 'خطا در ذخیره آدرس تصویر');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -110,6 +132,22 @@ export default function ProfilePage() {
                 </div>
                 <p className="text-gray-500 text-xs">برای تغییر عکس کلیک کنید</p>
               </div>
+
+              <form onSubmit={handleSaveAvatarUrl} className="space-y-2">
+                <label className="block text-sm text-gray-300">آدرس تصویر (اگر آپلود کار نکرد، لینک مستقیم تصویر را اینجا بگذارید)</label>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    value={avatarUrlInput}
+                    onChange={(e) => setAvatarUrlInput(e.target.value)}
+                    placeholder="https://..."
+                    className="flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-sm"
+                  />
+                  <button type="submit" className="btn-primary text-sm px-3 py-2 whitespace-nowrap" disabled={saving || !avatarUrlInput.trim()}>
+                    ذخیره لینک
+                  </button>
+                </div>
+              </form>
 
               <form onSubmit={handleSaveName} className="space-y-3">
                 <label className="block text-sm text-gray-300">نام نمایشی (مثل تلگرام)</label>

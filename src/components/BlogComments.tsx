@@ -60,22 +60,24 @@ function CommentItem({
     }
   };
 
-  const avatarUrl = c.author_image_url || pickDefaultAvatarUrl(c.author_email || c.id, defaultAvatarUrls);
+  const avatarUrl = (c.author_image_url || pickDefaultAvatarUrl(c.author_email || c.id, defaultAvatarUrls)) || '/AE logo.svg';
+  const safeName = c.author_name ?? 'ناشناس';
+  const safeDate = c.created_at ? formatDistanceToNow(new Date(c.created_at), { addSuffix: true, locale: faIR }) : '';
 
   return (
     <li className={isReply ? 'mr-6 mt-3 border-r-2 border-white/10 pr-3' : ''}>
       <div className="bg-black/30 rounded-xl p-4 border border-white/5 flex gap-3">
         <img
           src={avatarUrl}
-          alt={c.author_name}
+          alt={safeName}
           className="w-9 h-9 rounded-full object-cover flex-shrink-0"
-          onError={(e) => { e.currentTarget.src = pickDefaultAvatarUrl(c.id, defaultAvatarUrls) || '/AE logo.svg'; }}
+          onError={(e) => { e.currentTarget.src = (defaultAvatarUrls.length ? pickDefaultAvatarUrl(c.id, defaultAvatarUrls) : null) || '/AE logo.svg'; }}
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
-            <span className="font-semibold text-white text-sm">{c.author_name}</span>
+            <span className="font-semibold text-white text-sm">{safeName}</span>
             <span className="text-gray-500 text-xs">
-              {formatDistanceToNow(new Date(c.created_at), { addSuffix: true, locale: faIR })}
+              {safeDate}
             </span>
           </div>
           <p className="text-gray-300 text-sm whitespace-pre-wrap">{c.content}</p>
@@ -122,7 +124,7 @@ function CommentItem({
       </div>
       {c.replies && c.replies.length > 0 && (
         <ul className="mt-2 space-y-2">
-          {c.replies.map((r) => (
+          {(c.replies || []).filter((r) => r && r.id).map((r) => (
             <CommentItem
               key={r.id}
               c={r}
@@ -162,10 +164,11 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
       setLoading(true);
       setError(null);
       const list = await blogCommentService.getForPost(postId, user?.id ?? null);
-      setComments(list);
+      setComments(Array.isArray(list) ? list.filter((c) => c && c.id) : []);
     } catch (err: any) {
       console.error('Error loading blog comments', err);
       setError(err.message || 'خطا در بارگذاری نظرات');
+      setComments([]);
     } finally {
       setLoading(false);
     }

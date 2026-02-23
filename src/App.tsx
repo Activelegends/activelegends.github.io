@@ -29,6 +29,7 @@ import DefaultAvatarsAdminPage from './pages/admin/DefaultAvatarsAdmin';
 import ProfilePage from './pages/Profile';
 import CommentsAdminPage from './pages/admin/CommentsAdmin';
 import UsersAdminPage from './pages/admin/UsersAdmin';
+import AuthCallbackPage from './pages/auth/callback';
 
 function App() {
   const [showFooter, setShowFooter] = useState(false);
@@ -89,6 +90,7 @@ function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/admin/users" element={<UsersAdminPage />} />
                 <Route path="/admin/comments" element={<CommentsAdminPage />} />
+                <Route path="/auth/callback" element={<AuthCallbackPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>

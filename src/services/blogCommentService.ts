@@ -27,26 +27,43 @@ export const blogCommentService = {
     if (error) throw error;
     const all = (rows || []) as BlogComment[];
 
-    const topLevel = all.filter((c) => !c.parent_id);
-    const byParent = new Map<string | null, BlogComment[]>();
+    const byParent = new Map<string, BlogComment[]>();
     all.forEach((c) => {
       const key = c.parent_id ?? 'root';
       if (!byParent.has(key)) byParent.set(key, []);
       byParent.get(key)!.push(c);
     });
 
-    const buildTree = (parentId: string | null): BlogComment[] =>
-      (byParent.get(parentId ?? 'root') || []).map((c) => ({
+    const MAX_DEPTH = 10;
+    const buildTree = (parentKey: string, depth: number): BlogComment[] => {
+      if (depth > MAX_DEPTH) return [];
+      return (byParent.get(parentKey) || []).map((c) => ({
         ...c,
-        replies: buildTree(c.id),
+        replies: buildTree(c.id, depth + 1),
       }));
+    };
 
-    const tree = buildTree(null);
+    const tree = buildTree('root', 0);
+
+    const safeGetLikesCount = async (id: string): Promise<number> => {
+      try {
+        return await this.getLikesCount(id);
+      } catch {
+        return 0;
+      }
+    };
+    const safeHasLiked = async (id: string, uid: string): Promise<boolean> => {
+      try {
+        return await this.hasLiked(id, uid);
+      } catch {
+        return false;
+      }
+    };
 
     const attachLikes = async (node: BlogComment): Promise<BlogComment> => ({
       ...node,
-      likes_count: await this.getLikesCount(node.id),
-      liked: currentUserId ? await this.hasLiked(node.id, currentUserId) : false,
+      likes_count: await safeGetLikesCount(node.id),
+      liked: currentUserId ? await safeHasLiked(node.id, currentUserId) : false,
       replies: await Promise.all((node.replies || []).map(attachLikes)),
     });
 
