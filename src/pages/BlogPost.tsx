@@ -112,9 +112,9 @@ export default function BlogPostPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <div className="min-h-screen bg-black pt-24 pb-16">
-        <div className="container mx-auto px-4 md:px-8 max-w-4xl">
-          <article className="bg-white/5 border border-white/10 rounded-2xl p-5 md:p-7 shadow-lg mb-10">
+      <div className="min-h-screen bg-black pt-20 md:pt-24 pb-12 md:pb-16 overflow-x-hidden">
+        <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <article className="bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-7 shadow-lg mb-8 md:mb-10 min-w-0">
             <header className="mb-6">
               <h1 className="text-2xl md:text-3xl font-extrabold text-white mb-3">
                 {post.title}
@@ -150,7 +150,7 @@ export default function BlogPostPage() {
             )}
 
             <section
-              className="prose prose-invert max-w-none prose-p:text-gray-100 prose-headings:text-white prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
+              className="blog-post-content prose prose-invert max-w-none min-w-0 overflow-x-auto prose-p:text-gray-100 prose-headings:text-white prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:max-w-full prose-img:h-auto"
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(post.content_html || ''),
               }}
@@ -166,9 +166,9 @@ export default function BlogPostPage() {
           </article>
 
           {relatedPosts.length > 0 && (
-            <section>
-              <h2 className="text-xl font-bold text-white mb-4">پست‌های مرتبط</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <section className="min-w-0">
+              <h2 className="text-lg sm:text-xl font-bold text-white mb-3 md:mb-4">پست‌های مرتبط</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {relatedPosts.map((rp) => (
                   <article
                     key={rp.id}

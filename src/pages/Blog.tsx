@@ -67,13 +67,13 @@ export default function BlogPage() {
         <meta property="og:url" content="https://activelegend.ir/blog" />
         <meta property="og:image" content="https://activelegend.ir/AE%20logo.svg" />
       </Helmet>
-      <div className="min-h-screen bg-black pt-24 pb-16">
-        <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-          <header className="mb-10">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-3">
+      <div className="min-h-screen bg-black pt-20 md:pt-24 pb-12 md:pb-16 overflow-x-hidden">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <header className="mb-8 md:mb-10">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-extrabold text-white mb-2 md:mb-3">
               بلاگ اکتیو لجند
             </h1>
-            <p className="text-gray-300 text-sm md:text-base max-w-2xl">
+            <p className="text-gray-300 text-sm sm:text-base max-w-2xl text-right">
               مقالات، devlogها و آموزش‌های استودیو بازی‌سازی اکتیو لجند (Active Legend) درباره
               بازی‌ها، تکنولوژی و دنیای گیم.
             </p>
@@ -90,8 +90,8 @@ export default function BlogPage() {
             <>
               {/* Featured + hero ads */}
               {(featured || heroAds.length > 0) && (
-                <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-                  <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-5 md:p-6 shadow-lg">
+                <section className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 md:mb-10">
+                  <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 shadow-lg min-w-0">
                     <h2 className="text-lg font-bold text-primary mb-3">پست ویژه</h2>
                     {featured ? (
                       <Link to={`/blog/${featured.slug}`}>
@@ -120,7 +120,7 @@ export default function BlogPage() {
                       <p className="text-gray-400 text-sm">هنوز پست ویژه‌ای تنظیم نشده است.</p>
                     )}
                   </div>
-                  <aside className="space-y-4">
+                  <aside className="space-y-4 min-w-0">
                     {heroAds.map((ad) => (
                       <div
                         key={ad.id}
@@ -162,11 +162,11 @@ export default function BlogPage() {
               )}
 
               {/* Posts list */}
-              <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6">
                 {filteredPosts.map((post) => (
                   <article
                     key={post.id}
-                    className="bg-white/5 border border-white/10 rounded-2xl p-4 md:p-5 shadow-lg flex flex-col"
+                    className="bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col min-w-0 overflow-hidden"
                   >
                     <Link to={`/blog/${post.slug}`}>
                       {post.cover_image_url && (

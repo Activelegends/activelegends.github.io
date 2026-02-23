@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { blogService, blogAdsService, type BlogPost, type BlogAd, type BlogLang } from '../../services/blogService';
 import AdminQuickNav from '../../components/AdminQuickNav';
+import RichTextEditor from '../../components/RichTextEditor';
 
 type Tab = 'posts' | 'ads';
 
@@ -29,6 +30,7 @@ export default function BlogAdminPage() {
     is_featured: false,
   });
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
+  const [contentMode, setContentMode] = useState<'html' | 'rich'>('rich');
 
   const [adForm, setAdForm] = useState<Partial<BlogAd>>({
     position: 'hero',
@@ -306,14 +308,48 @@ export default function BlogAdminPage() {
                 value={postForm.excerpt || ''}
                 onChange={handlePostChange}
               />
-              <textarea
-                name="content_html"
-                className="bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono"
-                rows={8}
-                placeholder="محتوای HTML (می‌توانی از ویرایشگر HTML یا مارک‌داون خروجی بگیری و اینجا قرار دهی)"
-                value={postForm.content_html || ''}
-                onChange={handlePostChange}
-              />
+              <div>
+                <p className="text-sm text-gray-300 mb-2">نحوه ویرایش محتوا:</p>
+                <div className="flex flex-wrap gap-3 mb-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="content_mode"
+                      checked={contentMode === 'rich'}
+                      onChange={() => setContentMode('rich')}
+                      className="text-primary"
+                    />
+                    <span className="text-gray-200">ویرایشگر متنی (شبیه ورد) — متن، لینک، تصویر، عنوان و...</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="content_mode"
+                      checked={contentMode === 'html'}
+                      onChange={() => setContentMode('html')}
+                      className="text-primary"
+                    />
+                    <span className="text-gray-200">ورود مستقیم HTML</span>
+                  </label>
+                </div>
+                {contentMode === 'rich' ? (
+                  <RichTextEditor
+                    value={postForm.content_html || ''}
+                    onChange={(html) => setPostForm((prev) => ({ ...prev, content_html: html }))}
+                    placeholder="متن پست را اینجا بنویسید. از نوار بالا برای بولد، لینک، تصویر و..."
+                    minHeight="280px"
+                  />
+                ) : (
+                  <textarea
+                    name="content_html"
+                    className="bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-sm font-mono w-full"
+                    rows={10}
+                    placeholder="محتوای HTML (خروجی مارک‌داون یا HTML را اینجا قرار دهید)"
+                    value={postForm.content_html || ''}
+                    onChange={handlePostChange}
+                  />
+                )}
+              </div>
               <input
                 name="tags_input"
                 type="text"
