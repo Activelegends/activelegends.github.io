@@ -3,6 +3,7 @@ import { downloadLinksService } from '../../services/downloadLinksService';
 import type { DownloadLink } from '../../services/downloadLinksService';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import AdminQuickNav from '../../components/AdminQuickNav';
 
 export default function DownloadLinksAdmin() {
   const { user } = useAuth();
@@ -79,6 +80,7 @@ export default function DownloadLinksAdmin() {
 
   return (
     <div className="max-w-2xl mx-auto p-4 pt-24">
+      <AdminQuickNav />
       <div className="bg-white/10 rounded-2xl shadow-lg p-8 border border-white/10">
         <h1 className="text-2xl font-bold text-white mb-8 text-center">مدیریت لینک‌های دانلود</h1>
         <form onSubmit={handleSubmit} className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">

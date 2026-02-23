@@ -5,6 +5,7 @@ import DOMPurify from 'dompurify';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
+import AdminQuickNav from '../../components/AdminQuickNav';
 
 export default function TermsManagement() {
   const { user } = useAuth();
@@ -91,6 +92,7 @@ export default function TermsManagement() {
 
   return (
     <div className="admin-page-container max-w-4xl mx-auto p-4 pt-24">
+      <AdminQuickNav />
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">مدیریت قوانین و مقررات</h1>

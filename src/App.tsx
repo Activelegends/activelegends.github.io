@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -24,6 +23,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import BlogPage from './pages/Blog';
 import BlogPostPage from './pages/BlogPost';
 import BlogAdminPage from './pages/admin/BlogAdmin';
+import CommentsAdminPage from './pages/admin/CommentsAdmin';
+import UsersAdminPage from './pages/admin/UsersAdmin';
 
 function App() {
   const [showFooter, setShowFooter] = useState(false);
@@ -78,6 +79,8 @@ function App() {
                 <Route path="/blog" element={<BlogPage />} />
                 <Route path="/blog/:slug" element={<BlogPostPage />} />
                 <Route path="/admin/blog" element={<BlogAdminPage />} />
+                <Route path="/admin/users" element={<UsersAdminPage />} />
+                <Route path="/admin/comments" element={<CommentsAdminPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>

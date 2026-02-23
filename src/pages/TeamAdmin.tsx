@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabaseClient';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit, Trash2, X, Save, UserPlus } from 'lucide-react';
+import { Plus, Edit, Trash2, X, UserPlus } from 'lucide-react';
+import AdminQuickNav from '../components/AdminQuickNav';
 
 interface Social {
   icon: string;
@@ -117,6 +118,7 @@ export default function TeamAdmin() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 px-4 py-12 pt-24">
       <div className="max-w-3xl mx-auto">
+        <AdminQuickNav />
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-white flex items-center gap-2">
             <UserPlus className="w-7 h-7 text-blue-400" /> مدیریت اعضای تیم
