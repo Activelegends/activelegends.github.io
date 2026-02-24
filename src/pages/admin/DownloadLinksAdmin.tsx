@@ -164,7 +164,7 @@ export default function DownloadLinksAdmin() {
                       >{`${window.location.origin}/#/download/${link.id}`}</a>
                       <button
                         className="ml-2 text-xs text-gray-400 hover:text-primary"
-                        onClick={() => navigator.clipboard.writeText(`${window.location.origin}/#/download/${link.id}`)}
+                        onClick={() => navigator.clipboard.writeText(`${window.location.origin}/download/${link.id}`)}
                         title="کپی لینک صفحه تبلیغ"
                       >کپی</button>
                     </td>
