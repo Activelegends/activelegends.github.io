@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useProfile } from '../contexts/ProfileContext';
 import { useDefaultAvatarUrls } from '../hooks/useDefaultAvatarUrls';
 import { pickDefaultAvatarUrl } from '../services/defaultAvatarsService';
+import { FaThumbsUp, FaReply } from 'react-icons/fa';
 
 interface BlogCommentsProps {
   postId: string;
