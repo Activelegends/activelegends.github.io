@@ -95,18 +95,18 @@ function CommentItem({
               type="button"
               onClick={handleLike}
               disabled={!currentUserId || likeLoading}
-              className={`flex items-center gap-1 text-xs ${liked ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}
+              className={`flex items-center gap-1 text-sm leading-none ${liked ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}
             >
-              <FaThumbsUp className={liked ? 'fill-current' : ''} />
-              <span>{likeCount}</span>
+              <FaThumbsUp className={`w-4 h-4 ${liked ? 'fill-current' : ''}`} />
+              <span className="mt-0.5">{likeCount}</span>
             </button>
             {!isReply && (
               <button
                 type="button"
                 onClick={() => { setShowReplyForm(!showReplyForm); onReply(c.id); }}
-                className="text-gray-400 hover:text-primary text-xs flex items-center gap-1"
+                className="text-gray-400 hover:text-primary text-sm flex items-center gap-1 leading-none"
               >
-                <FaReply /> پاسخ
+                <FaReply className="w-4 h-4" /> <span className="mt-0.5">پاسخ</span>
               </button>
             )}
           </div>
@@ -190,10 +190,14 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const name = isLoggedIn ? displayName : authorName.trim();
-    const email = isLoggedIn ? (user!.email ?? '') : authorEmail.trim();
+    if (!isLoggedIn) {
+      setError('برای ارسال نظر باید ابتدا وارد حساب کاربری شوید.');
+      return;
+    }
+    const name = displayName;
+    const email = user!.email ?? '';
     if (!name || !email || !content.trim()) {
-      setError('نام، ایمیل و متن نظر را وارد کنید.');
+      setError('متن نظر را وارد کنید.');
       return;
     }
     try {
@@ -218,12 +222,12 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
   };
 
   const handleReplySubmit = async (parentId: string, text: string) => {
-    const name = isLoggedIn ? displayName : authorName.trim();
-    const email = isLoggedIn ? (user!.email ?? '') : authorEmail.trim();
-    if (!name || !email) {
-      setError('برای پاسخ دادن با حساب کاربری وارد شوید یا نام و ایمیل را در باکس بالا وارد کنید.');
+    if (!isLoggedIn) {
+      setError('برای پاسخ دادن باید ابتدا وارد حساب کاربری شوید.');
       return;
     }
+    const name = displayName;
+    const email = user!.email ?? '';
     await blogCommentService.add(postId, {
       author_name: name,
       author_email: email,
@@ -246,41 +250,28 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
 
       <form onSubmit={handleSubmit} className="space-y-3 mb-8">
         {!isLoggedIn && (
-          <>
-            <input
-              type="text"
-              placeholder="نام شما"
-              className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-sm"
-              value={authorName}
-              onChange={(e) => setAuthorName(e.target.value)}
-              required
-            />
-            <input
-              type="email"
-              placeholder="ایمیل (نمایش داده نمی‌شود)"
-              className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-sm"
-              value={authorEmail}
-              onChange={(e) => setAuthorEmail(e.target.value)}
-              required
-            />
-          </>
-        )}
-        {isLoggedIn && (
           <p className="text-gray-400 text-sm">
-            در حال ارسال نظر با نام <strong className="text-white">{displayName}</strong> (از پروفایل شما).
+            برای ثبت نظر لطفاً ابتدا وارد حساب کاربری شوید.
           </p>
         )}
-        <textarea
-          placeholder="نظر شما..."
-          rows={3}
-          className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-sm"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-        />
-        <button type="submit" className="btn-primary text-sm px-4 py-2" disabled={submitting}>
-          {submitting ? 'در حال ارسال...' : 'ارسال نظر'}
-        </button>
+        {isLoggedIn && (
+          <>
+            <p className="text-gray-400 text-sm">
+              در حال ارسال نظر با نام <strong className="text-white">{displayName}</strong> (از پروفایل شما).
+            </p>
+            <textarea
+              placeholder="نظر شما..."
+              rows={3}
+              className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-sm"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              required
+            />
+            <button type="submit" className="btn-primary text-sm px-4 py-2" disabled={submitting}>
+              {submitting ? 'در حال ارسال...' : 'ارسال نظر'}
+            </button>
+          </>
+        )}
         {sent && (
           <p className="text-primary text-sm">نظر شما با موفقیت ثبت شد و پس از تأیید نمایش داده می‌شود.</p>
         )}
