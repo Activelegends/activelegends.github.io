@@ -76,7 +76,7 @@ function CommentItem({
 
   return (
     <li className={isReply ? 'mr-6 mt-3 border-r-2 border-white/10 pr-3' : ''}>
-      <div className="bg-black/30 rounded-xl p-4 border border-white/5 flex gap-3">
+      <div className="bg-black/30 rounded-xl p-4 border border-white/5 flex items-center gap-3">
         <img
           src={avatarUrl}
           alt={safeName}
@@ -99,7 +99,7 @@ function CommentItem({
               className={`flex items-center gap-1 text-sm leading-none ${liked ? 'text-primary' : 'text-gray-400 hover:text-primary'}`}
             >
               <FaThumbsUp className={`w-4 h-4 ${liked ? 'fill-current' : ''}`} />
-              <span className="mt-0.5">{likeCount}</span>
+              <span className="text-sm font-medium">{likeCount}</span>
             </button>
             {!isReply && (
               <button
@@ -107,7 +107,7 @@ function CommentItem({
                 onClick={() => { setShowReplyForm(!showReplyForm); onReply(c.id); }}
                 className="text-gray-400 hover:text-primary text-sm flex items-center gap-1 leading-none"
               >
-                <FaReply className="w-4 h-4" /> <span className="mt-0.5">پاسخ</span>
+                <FaReply className="w-4 h-4" /> <span className="text-sm">پاسخ</span>
               </button>
             )}
           </div>
@@ -163,8 +163,6 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const [content, setContent] = useState('');
-  const [authorName, setAuthorName] = useState('');
-  const [authorEmail, setAuthorEmail] = useState('');
 
   const isLoggedIn = !!user;
   const displayName = profile?.display_name?.trim() || user?.user_metadata?.full_name || user?.email?.split('@')[0] || '';
@@ -258,7 +256,7 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
         {isLoggedIn && (
           <>
             <p className="text-gray-400 text-sm">
-              در حال ارسال نظر با نام <strong className="text-white">{displayName}</strong> (از پروفایل شما).
+              در حال ارسال نظر با نام <strong className="text-white">{displayName}</strong>
             </p>
             <textarea
               placeholder="نظر شما..."

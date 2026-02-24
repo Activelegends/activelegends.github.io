@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '../contexts/AuthContext';
 import { commentService } from '../services/commentService';
 import type { Comment, CommentFormData, LikeState } from '../types/comment';
-import { FaThumbsUp, FaThumbsDown, FaReply, FaThumbtack, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaThumbsUp, FaReply, FaThumbtack, FaCheck, FaTimes } from 'react-icons/fa';
 import { supabase } from '../lib/supabase';
 
 interface CommentsProps {
@@ -18,7 +17,6 @@ export const Comments: React.FC<CommentsProps> = ({ gameId }) => {
   const [error, setError] = useState<string | null>(null);
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
-  const [showReplies, setShowReplies] = useState<Record<string, boolean>>({});
   const [submitting, setSubmitting] = useState(false);
   const [likeStates, setLikeStates] = useState<Record<string, LikeState>>({});
 
@@ -185,13 +183,6 @@ export const Comments: React.FC<CommentsProps> = ({ gameId }) => {
     }
   };
 
-  const handleToggleReplies = (commentId: string) => {
-    setShowReplies(prev => ({
-      ...prev,
-      [commentId]: !prev[commentId],
-    }));
-  };
-
   const handleAdminAction = async (
     action: 'pin' | 'approve' | 'delete',
     commentId: string
@@ -267,7 +258,7 @@ export const Comments: React.FC<CommentsProps> = ({ gameId }) => {
         exit={{ opacity: 0, y: -20 }}
         className={`bg-white rounded-lg shadow-md p-4 mb-4 ${isReply ? 'ml-8' : ''} ${borderClass}`}
       >
-        <div className="flex items-start justify-between">
+        <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <img
               src={getAvatarUrl(comment.user)}
@@ -319,21 +310,22 @@ export const Comments: React.FC<CommentsProps> = ({ gameId }) => {
         </div>
         <p className="mt-2 text-gray-700">{comment.content}</p>
         {/* دکمه لایک و تعداد لایک با تراز مناسب */}
-        <div className="mt-3 flex items-center gap-2">
+        <div className="mt-3 flex items-center gap-3">
           <button
             onClick={() => handleLike(comment.id)}
             disabled={!user || likeState.loading}
-            className={`flex items-center gap-1 ${likeState.liked ? 'text-blue-500' : 'text-gray-400'} hover:text-blue-500`}
+            className={`flex items-center gap-1 text-sm leading-none ${likeState.liked ? 'text-blue-500' : 'text-gray-400'} hover:text-blue-500`}
           >
-            <FaThumbsUp />
-            <span className="text-base font-medium">{likeState.count}</span>
+            <FaThumbsUp className="w-4 h-4" />
+            <span className="text-sm font-medium">{likeState.count}</span>
           </button>
           {!isReply && (
             <button
               onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
-              className="text-gray-400 hover:text-blue-500"
+              className="flex items-center gap-1 text-sm leading-none text-gray-400 hover:text-blue-500"
             >
-              <FaReply />
+              <FaReply className="w-4 h-4" />
+              <span className="text-sm">پاسخ</span>
             </button>
           )}
         </div>
@@ -348,10 +340,10 @@ export const Comments: React.FC<CommentsProps> = ({ gameId }) => {
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-              placeholder="پاسخ خود را بنویسید..."
-              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              rows={3}
-            />
+                placeholder="پاسخ خود را بنویسید..."
+                className="w-full p-2 border rounded-lg bg-gray-900 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                rows={3}
+              />
             <div className="flex justify-end space-x-2">
               <button
                 type="button"
