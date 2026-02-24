@@ -123,19 +123,21 @@ export default function BlogPage() {
                     )}
                   </div>
                   <aside className="space-y-4 min-w-0">
+                    {/* جایگاه یکتانت کنار پست ویژه */}
+                    <div id="yk-blog-hero" className="w-full flex justify-center items-center" />
                     {heroAds.map((ad) => (
                       <AdSnippet
                         key={ad.id}
                         html={ad.html_snippet}
                         position={ad.position}
-                        className={ad.position === 'special' ? 'ad-container ad-container-text ad-container-special' : 'ad-container ad-container-text'}
+                        className={ad.position === 'special' ? 'sponsor-box sponsor-box-text sponsor-box-special' : 'sponsor-box sponsor-box-text'}
                       />
                     ))}
                     {sidebarAds.map((ad) => (
                       <AdSnippet
                         key={ad.id}
                         html={ad.html_snippet}
-                        className="ad-container ad-container-text ad-container-sidebar"
+                        className="sponsor-box sponsor-box-text sponsor-box-sidebar"
                       />
                     ))}
                   </aside>

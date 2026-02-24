@@ -149,9 +149,14 @@ export default function BlogPostPage() {
               />
             )}
 
+            {/* جایگاه تصویری/متنی ابتدای مطلب برای یکتانت */}
+            <div className="mb-6">
+              <div id="yk-blog-top" className="w-full flex justify-center items-center" />
+            </div>
+
             {/* Inline ad before content */}
             {inlineAds[0] && (
-              <AdSnippet html={inlineAds[0].html_snippet} className="ad-container ad-container-text mb-6" />
+              <AdSnippet html={inlineAds[0].html_snippet} className="sponsor-box sponsor-box-text mb-6" />
             )}
 
             <section
@@ -163,8 +168,14 @@ export default function BlogPostPage() {
 
             {/* Inline ad after content */}
             {inlineAds[1] && (
-              <AdSnippet html={inlineAds[1].html_snippet} className="ad-container ad-container-text mt-6" />
+              <AdSnippet html={inlineAds[1].html_snippet} className="sponsor-box sponsor-box-text mt-6" />
             )}
+
+            {/* جایگاه میان مطلب و انتهای مطلب برای یکتانت */}
+            <div className="mt-6 space-y-4">
+              <div id="yk-blog-inline-1" className="w-full flex justify-center items-center" />
+              <div id="yk-blog-bottom" className="w-full flex justify-center items-center" />
+            </div>
 
             <BlogCommentsErrorBoundary>
             <BlogComments postId={post.id} />
@@ -195,11 +206,13 @@ export default function BlogPostPage() {
 
             {sidebarAds.length > 0 && (
               <aside className="space-y-4 min-w-0 hidden lg:block">
+                {/* جایگاه سایدبار برای یکتانت */}
+                <div id="yk-blog-sidebar" className="w-full flex justify-center items-center" />
                 {sidebarAds.map((ad) => (
                   <AdSnippet
                     key={ad.id}
                     html={ad.html_snippet}
-                    className="ad-container ad-container-text ad-container-sidebar"
+                    className="sponsor-box sponsor-box-text sponsor-box-sidebar"
                   />
                 ))}
               </aside>

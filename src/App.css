@@ -2,8 +2,8 @@ body, html, * {
   font-family: 'Vazirmatn', 'Shabnam', sans-serif !important;
 }
 
-/* استایل container تبلیغات (نه div تبلیغاتی یکتانت) */
-.ad-container, .ad-container-bottom, .ad-container-text {
+/* استایل container اسپانسر (نه div تبلیغاتی یکتانت) */
+.sponsor-box, .sponsor-box-bottom, .sponsor-box-text {
   background: linear-gradient(90deg, #232526 0%, #414345 100%);
   border-radius: 1rem;
   border: 1.5px solid #6ee7b7;
@@ -17,7 +17,7 @@ body, html, * {
   justify-content: center;
 }
 
-.ad-label {
+.sponsor-label {
   color: #fff;
   font-size: 0.95rem;
   font-weight: bold;
@@ -26,12 +26,12 @@ body, html, * {
   font-family: 'Vazirmatn', 'Shabnam', sans-serif;
 }
 
-/* تبلیغات ویژه (مثل یکتانت) — فضای کافی و اجازه نمایش اسکریپت/iframe */
-.ad-container-special {
+/* اسپانسر ویژه (مثل یکتانت) — فضای کافی و اجازه نمایش اسکریپت/iframe */
+.sponsor-box-special {
   min-height: 180px;
   overflow: visible;
 }
-.ad-container-sidebar {
+.sponsor-box-sidebar {
   min-height: 100px;
 }
 

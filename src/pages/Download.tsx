@@ -5,8 +5,8 @@ import { downloadLinksService } from '../services/downloadLinksService';
 import type { DownloadLink } from '../services/downloadLinksService';
 
 const AD_BANNER = (
-  <div className="ad-container">
-    <span className="ad-label">تبلیغات</span>
+  <div className="sponsor-box">
+    <span className="sponsor-label">تبلیغات</span>
     <div id="pos-article-display-108441" className="w-full flex justify-center items-center"></div>
   </div>
 );
@@ -60,25 +60,7 @@ export default function DownloadPage() {
     return () => clearInterval(timer);
   }, [link]);
 
-  useEffect(() => {
-    // بارگذاری اسکریپت یکتانت فقط اگر قبلاً اضافه نشده باشد
-    const scriptId = "yektanet-script";
-    if (!document.getElementById(scriptId)) {
-      const r = new Date();
-      const c = `https://cdn.yektanet.com/superscript/OYzquHID/native-activelegend.ir-43485/yn_pub.js?v=${r.getFullYear()}0${r.getMonth()}0${r.getDate()}0${r.getHours()}`;
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "script";
-      link.href = c;
-      document.head.appendChild(link);
-
-      const script = document.createElement("script");
-      script.id = scriptId;
-      script.async = true;
-      script.src = c;
-      document.head.appendChild(script);
-    }
-  }, []);
+  // اسکریپت یکتانت به‌صورت سراسری در <head> (public/index.html) قرار داده شده است.
 
   const handleDownload = () => {
     if (link?.url) {
@@ -175,8 +157,8 @@ export default function DownloadPage() {
               اگر دانلود به صورت خودکار آغاز نشد، روی دکمه بالا کلیک کنید.
             </div>
             {showContent && (
-              <div className="ad-container ad-container-bottom">
-                <span className="ad-label">تبلیغات</span>
+              <div className="sponsor-box sponsor-box-bottom">
+                <span className="sponsor-label">تبلیغات</span>
                 <div id="pos-article-display-108440" className="w-full flex justify-center items-center"></div>
               </div>
             )}
@@ -184,8 +166,8 @@ export default function DownloadPage() {
         )}
       </div>
       {showContent && (
-        <div className="ad-container ad-container-text">
-          <span className="ad-label">تبلیغات</span>
+        <div className="sponsor-box sponsor-box-text">
+          <span className="sponsor-label">تبلیغات</span>
           <div id="pos-article-text-108405" className="w-full flex justify-center items-center"></div>
         </div>
       )}

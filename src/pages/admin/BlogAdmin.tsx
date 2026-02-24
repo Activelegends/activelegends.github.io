@@ -519,6 +519,69 @@ export default function BlogAdminPage() {
               </div>
             </form>
 
+            {/* بخش راهنمای یکتانت برای بلاگ */}
+            <div className="mb-8 p-4 rounded-xl border border-yellow-400/40 bg-black/40 text-xs md:text-sm text-gray-100 space-y-3">
+              <h2 className="text-sm md:text-base font-bold text-yellow-300">تبلیغات یکتانت در بلاگ</h2>
+              <p className="text-gray-300">
+                کد اصلی یکتانت (اسکریپت) طبق راهنمای خودشان فقط یک‌بار در
+                <code className="mx-1 px-1 rounded bg-white/10 text-[11px]">public/index.html</code>
+                و داخل تگ
+                <code className="mx-1 px-1 rounded bg-white/10 text-[11px]">&lt;head&gt;</code>
+                قرار گرفته است. در صفحات بلاگ، فقط کافی است «جایگاه‌ها» (divهایی با آیدی ثابت) را استفاده کنید.
+              </p>
+              <p className="text-gray-300">
+                طبق قوانین یکتانت:
+                <span className="block mt-1">
+                  ۱) <strong>هیچ تغییری در کد یکتانت</strong> (اسکریپت و HTML خودشان) ندهید.
+                </span>
+                <span className="block">
+                  ۲) جایگاه‌ها داخل تگ‌هایی با کلاس/آیدی حاوی کلمات <code>ad</code>، <code>ads</code>،{' '}
+                  <code>banner</code> و... قرار نگیرند (برای همین ما از کلاس‌های
+                  <code className="mx-1 px-1 rounded bg-white/10 text-[11px]">sponsor-*</code> استفاده کرده‌ایم).
+                </span>
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <h3 className="font-semibold text-white mb-1">جایگاه‌های صفحه پست بلاگ:</h3>
+                  <ul className="list-disc list-inside space-y-1 text-gray-200">
+                    <li>
+                      <strong>تصویری / متنی ابتدای مطلب:</strong>{' '}
+                      <code className="px-1 rounded bg-white/10 text-[11px]">&lt;div id=&quot;yk-blog-top&quot;&gt;&lt;/div&gt;</code>
+                    </li>
+                    <li>
+                      <strong>میان مطلب (تکرارشونده):</strong>{' '}
+                      <code className="px-1 rounded bg-white/10 text-[11px]">&lt;div id=&quot;yk-blog-inline-1&quot;&gt;&lt;/div&gt;</code>
+                    </li>
+                    <li>
+                      <strong>انتهای مطلب:</strong>{' '}
+                      <code className="px-1 rounded bg-white/10 text-[11px]">&lt;div id=&quot;yk-blog-bottom&quot;&gt;&lt;/div&gt;</code>
+                    </li>
+                    <li>
+                      <strong>ثابت پایینی / تمام‌صفحه:</strong> طبق قرارداد جداگانه (خارج از بلاگ) تنظیم می‌شود.
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white mb-1">جایگاه‌های سایدبار و لیست بلاگ:</h3>
+                  <ul className="list-disc list-inside space-y-1 text-gray-200">
+                    <li>
+                      <strong>سایدبار صفحه پست:</strong>{' '}
+                      <code className="px-1 rounded bg-white/10 text-[11px]">&lt;div id=&quot;yk-blog-sidebar&quot;&gt;&lt;/div&gt;</code>
+                    </li>
+                    <li>
+                      <strong>بالای لیست بلاگ (کنار پست ویژه):</strong>{' '}
+                      <code className="px-1 rounded bg-white/10 text-[11px]">&lt;div id=&quot;yk-blog-hero&quot;&gt;&lt;/div&gt;</code>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <p className="text-gray-300">
+                برای استفاده، کافی است این آیدی‌ها را به کارشناس یکتانت بدهید تا در پنل‌شان جایگاه‌ها را برای
+                دامنه <strong>activelegend.ir</strong> تعریف کند؛ شما نیازی به ویرایش کد یا افزودن CSS/JS داخل
+                کد یکتانت ندارید.
+              </p>
+            </div>
+
             <div className="overflow-x-auto">
               <table className="min-w-full text-xs md:text-sm text-gray-200">
                 <thead>

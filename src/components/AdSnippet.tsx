@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react';
  */
 export default function AdSnippet({
   html,
-  className = 'ad-container ad-container-text',
+  className = 'sponsor-box sponsor-box-text',
   position,
 }: {
   html: string;
@@ -32,7 +32,7 @@ export default function AdSnippet({
   return (
     <div
       ref={containerRef}
-      className={position === 'special' ? `${className} ad-container-special` : className}
+      className={position === 'special' ? `${className} sponsor-box-special` : className}
     />
   );
 }
