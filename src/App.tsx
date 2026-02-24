@@ -26,6 +26,7 @@ import BlogPostPage from './pages/BlogPost';
 import BlogAdminPage from './pages/admin/BlogAdmin';
 import BlogCommentsAdminPage from './pages/admin/BlogCommentsAdmin';
 import DefaultAvatarsAdminPage from './pages/admin/DefaultAvatarsAdmin';
+import YektanetAdminPage from './pages/admin/YektanetAdmin';
 import ProfilePage from './pages/Profile';
 import CommentsAdminPage from './pages/admin/CommentsAdmin';
 import UsersAdminPage from './pages/admin/UsersAdmin';
@@ -87,6 +88,7 @@ function App() {
                 <Route path="/admin/blog" element={<BlogAdminPage />} />
                 <Route path="/admin/blog-comments" element={<BlogCommentsAdminPage />} />
                 <Route path="/admin/default-avatars" element={<DefaultAvatarsAdminPage />} />
+                <Route path="/admin/yektanet" element={<YektanetAdminPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/admin/users" element={<UsersAdminPage />} />
                 <Route path="/admin/comments" element={<CommentsAdminPage />} />

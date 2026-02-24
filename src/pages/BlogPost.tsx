@@ -6,6 +6,8 @@ import { blogService, blogAdsService, type BlogPost, type BlogAd } from '../serv
 import BlogComments from '../components/BlogComments';
 import { BlogCommentsErrorBoundary } from '../components/BlogCommentsErrorBoundary';
 import AdSnippet from '../components/AdSnippet';
+import { yektanetService, type YektanetPlacement } from '../services/yektanetService';
+import type { ReactNode } from 'react';
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -16,6 +18,7 @@ export default function BlogPostPage() {
   const [sidebarAds, setSidebarAds] = useState<BlogAd[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [ykPlacements, setYkPlacements] = useState<YektanetPlacement[]>([]);
 
   useEffect(() => {
     if (!slug) return;
@@ -29,14 +32,16 @@ export default function BlogPostPage() {
           return;
         }
         setPost(p);
-        const [related, inline, sidebar] = await Promise.all([
+        const [related, inline, sidebar, yk] = await Promise.all([
           blogService.getRelatedPosts(p.id, p.tags || [], 3),
           blogAdsService.getAdsForPosition('inline'),
           blogAdsService.getAdsForPosition('sidebar'),
+          yektanetService.getActiveForBlogPost(),
         ]);
         setRelatedPosts(related);
         setInlineAds(inline);
         setSidebarAds(sidebar);
+        setYkPlacements(yk);
       } catch (err: any) {
         console.error('Error loading blog post', err);
         setError('خطا در بارگذاری پست');
@@ -76,6 +81,11 @@ export default function BlogPostPage() {
         : null,
     [post, canonicalUrl]
   );
+
+  const ykStart = ykPlacements.filter((p) => p.position === 'post_start' && p.enabled);
+  const ykEnd = ykPlacements.filter((p) => p.position === 'post_end' && p.enabled);
+  const ykSidebar = ykPlacements.filter((p) => p.position === 'sidebar' && p.enabled);
+  const ykMiddle = ykPlacements.filter((p) => p.position === 'post_middle' && p.enabled);
 
   if (loading) {
     return (
@@ -149,33 +159,27 @@ export default function BlogPostPage() {
               />
             )}
 
-            {/* جایگاه تصویری/متنی ابتدای مطلب برای یکتانت */}
-            <div className="mb-6">
-              <div id="yk-blog-top" className="w-full flex justify-center items-center" />
-            </div>
+            {ykStart.map((p) => (
+              <AdSnippet key={p.key} html={p.html_code} className="yk-slot yk-slot-start mb-6" />
+            ))}
 
-            {/* Inline ad before content */}
+            {/* Inline ad قبل از محتوا (غیر یکتانت) */}
             {inlineAds[0] && (
               <AdSnippet html={inlineAds[0].html_snippet} className="sponsor-box sponsor-box-text mb-6" />
             )}
 
-            <section
-              className="blog-post-content prose prose-invert max-w-none min-w-0 overflow-x-auto prose-p:text-gray-100 prose-headings:text-white prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:max-w-full prose-img:h-auto"
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(post.content_html || ''),
-              }}
-            />
+            <section className="blog-post-content prose prose-invert max-w-none min-w-0 overflow-x-auto prose-p:text-gray-100 prose-headings:text-white prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:max-w-full prose-img:h-auto">
+              {renderContentWithYektanet(post.content_html || '', ykMiddle)}
+            </section>
 
-            {/* Inline ad after content */}
+            {ykEnd.map((p) => (
+              <AdSnippet key={p.key} html={p.html_code} className="yk-slot yk-slot-end mt-6" />
+            ))}
+
+            {/* Inline ad بعد از محتوا (غیر یکتانت) */}
             {inlineAds[1] && (
               <AdSnippet html={inlineAds[1].html_snippet} className="sponsor-box sponsor-box-text mt-6" />
             )}
-
-            {/* جایگاه میان مطلب و انتهای مطلب برای یکتانت */}
-            <div className="mt-6 space-y-4">
-              <div id="yk-blog-inline-1" className="w-full flex justify-center items-center" />
-              <div id="yk-blog-bottom" className="w-full flex justify-center items-center" />
-            </div>
 
             <BlogCommentsErrorBoundary>
             <BlogComments postId={post.id} />
@@ -204,10 +208,11 @@ export default function BlogPostPage() {
           )}
             </div>
 
-            {sidebarAds.length > 0 && (
+            {sidebarAds.length > 0 || ykSidebar.length > 0 ? (
               <aside className="space-y-4 min-w-0 hidden lg:block">
-                {/* جایگاه سایدبار برای یکتانت */}
-                <div id="yk-blog-sidebar" className="w-full flex justify-center items-center" />
+                {ykSidebar.map((p) => (
+                  <AdSnippet key={p.key} html={p.html_code} className="yk-slot yk-slot-sidebar" />
+                ))}
                 {sidebarAds.map((ad) => (
                   <AdSnippet
                     key={ad.id}
@@ -216,11 +221,60 @@ export default function BlogPostPage() {
                   />
                 ))}
               </aside>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
     </>
   );
+}
+
+function renderContentWithYektanet(html: string, middle: YektanetPlacement[]): ReactNode {
+  const sanitized = DOMPurify.sanitize(html || '');
+  if (!middle.length) {
+    return (
+      <div
+        dangerouslySetInnerHTML={{
+          __html: sanitized,
+        }}
+      />
+    );
+  }
+
+  const parts = sanitized.split('</p>');
+  const nodes: ReactNode[] = [];
+
+  const placements = middle.slice();
+
+  parts.forEach((part, idx) => {
+    const content = part.trim();
+    if (!content) return;
+    const paragraphHtml = `${content}</p>`;
+    nodes.push(
+      <div
+        key={`p-${idx}`}
+        dangerouslySetInnerHTML={{
+          __html: paragraphHtml,
+        }}
+      />,
+    );
+
+    const paragraphIndex = idx + 1;
+    placements.forEach((p) => {
+      const start = p.insert_after_paragraph && p.insert_after_paragraph > 0 ? p.insert_after_paragraph : null;
+      const every = p.repeat_every_paragraph && p.repeat_every_paragraph > 0 ? p.repeat_every_paragraph : null;
+      const shouldInsertOnce = start !== null && every == null && paragraphIndex === start;
+      const shouldInsertRepeated =
+        start !== null && every !== null && paragraphIndex >= start && (paragraphIndex - start) % every === 0;
+
+      if (shouldInsertOnce || shouldInsertRepeated) {
+        nodes.push(
+          <AdSnippet key={`${p.key}-${paragraphIndex}`} html={p.html_code} className="yk-slot yk-slot-middle my-4" />,
+        );
+      }
+    });
+  });
+
+  return nodes;
 }
 
