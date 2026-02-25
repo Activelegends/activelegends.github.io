@@ -277,11 +277,11 @@ export default function DownloadLinksAdmin() {
                     </td>
                     <td className="p-2 truncate max-w-[120px]">
                       <a
-                        href={`${window.location.origin}/#/download/${link.id}`}
+                        href={`${window.location.origin}/download/${link.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-primary underline break-all"
-                      >{`${window.location.origin}/#/download/${link.id}`}</a>
+                      >{`${window.location.origin}/download/${link.id}`}</a>
                       <button
                         className="ml-2 text-xs text-gray-400 hover:text-primary"
                         onClick={() => navigator.clipboard.writeText(`${window.location.origin}/download/${link.id}`)}
