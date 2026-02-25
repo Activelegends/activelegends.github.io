@@ -258,7 +258,7 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
         {isLoggedIn && (
           <>
             <p className="text-gray-400 text-sm">
-              در حال ارسال نظر با نام <strong className="text-white">{displayName}</strong> (از پروفایل شما).
+              در حال ارسال نظر با نام <strong className="text-white">{displayName}</strong> 
             </p>
             <textarea
               placeholder="نظر شما..."

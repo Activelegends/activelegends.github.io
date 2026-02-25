@@ -3,13 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { downloadLinksService } from '../services/downloadLinksService';
 import type { DownloadLink } from '../services/downloadLinksService';
-
-const AD_BANNER = (
-  <div className="sponsor-box">
-    <span className="sponsor-label">تبلیغات</span>
-    <div id="pos-article-display-108441" className="w-full flex justify-center items-center"></div>
-  </div>
-);
+import { downloadAdsService, type DownloadAd } from '../services/downloadAdsService';
+import AdSnippet from '../components/AdSnippet';
 
 export default function DownloadPage() {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +15,7 @@ export default function DownloadPage() {
   const [loading, setLoading] = useState(true);
   const [link, setLink] = useState<DownloadLink | null>(null);
   const [showContent, setShowContent] = useState(false);
+  const [ads, setAds] = useState<DownloadAd[]>([]);
 
   useEffect(() => {
     if (!id) {
@@ -62,6 +58,14 @@ export default function DownloadPage() {
 
   // اسکریپت یکتانت به‌صورت سراسری در <head> (public/index.html) قرار داده شده است.
 
+  useEffect(() => {
+    // بارگذاری تبلیغات فعال صفحه‌های دانلود
+    downloadAdsService
+      .getActiveAds()
+      .then((list) => setAds(Array.isArray(list) ? list : []))
+      .catch(() => setAds([]));
+  }, []);
+
   const handleDownload = () => {
     if (link?.url) {
       window.location.href = link.url;
@@ -95,6 +99,10 @@ export default function DownloadPage() {
     ? `دانلود ${link.title} از Active Legend. لینک مستقیم دانلود.`
     : 'صفحه دانلود فایل از Active Legend.';
 
+  const topAds = ads.filter((a) => a.position === 'top');
+  const afterButtonAds = ads.filter((a) => a.position === 'after_button');
+  const bottomAds = ads.filter((a) => a.position === 'page_bottom');
+
   return (
     <div className={`min-h-screen flex flex-col items-center justify-center px-4 py-12 transition-all duration-1000 ${
       showContent ? 'bg-white' : 'bg-black'
@@ -121,7 +129,13 @@ export default function DownloadPage() {
             {link.title}
           </div>
         )}
-        {showContent && AD_BANNER}
+        {showContent &&
+          topAds.map((ad) => (
+            <div key={ad.id} className="sponsor-box">
+              <span className="sponsor-label">تبلیغات</span>
+              <AdSnippet html={ad.html_snippet} />
+            </div>
+          ))}
         {!ready ? (
           <>
             <div className={`text-lg font-bold mb-2 transition-all duration-1000 md:text-xl ${
@@ -156,21 +170,23 @@ export default function DownloadPage() {
             }`}>
               اگر دانلود به صورت خودکار آغاز نشد، روی دکمه بالا کلیک کنید.
             </div>
-            {showContent && (
-              <div className="sponsor-box sponsor-box-bottom">
-                <span className="sponsor-label">تبلیغات</span>
-                <div id="pos-article-display-108440" className="w-full flex justify-center items-center"></div>
-              </div>
-            )}
+            {showContent &&
+              afterButtonAds.map((ad) => (
+                <div key={ad.id} className="sponsor-box sponsor-box-bottom">
+                  <span className="sponsor-label">تبلیغات</span>
+                  <AdSnippet html={ad.html_snippet} />
+                </div>
+              ))}
           </>
         )}
       </div>
-      {showContent && (
-        <div className="sponsor-box sponsor-box-text">
-          <span className="sponsor-label">تبلیغات</span>
-          <div id="pos-article-text-108405" className="w-full flex justify-center items-center"></div>
-        </div>
-      )}
+      {showContent &&
+        bottomAds.map((ad) => (
+          <div key={ad.id} className="sponsor-box sponsor-box-text">
+            <span className="sponsor-label">تبلیغات</span>
+            <AdSnippet html={ad.html_snippet} />
+          </div>
+        ))}
     </div>
   );
 } 
