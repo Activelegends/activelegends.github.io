@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { blogService, blogAdsService, type BlogPost, type BlogAd, type BlogLang } from '../../services/blogService';
 import AdminQuickNav from '../../components/AdminQuickNav';
-import RichTextEditor from '../../components/RichTextEditor';
 
+// نوع‌های تب‌ها
 type Tab = 'posts' | 'ads';
 
 const ADMIN_EMAIL = 'active.legendss@gmail.com';
 
+// تابع کمکی برای تبدیل ورودی تگ‌ها به آرایه
 function parseTagsInput(value: string): string[] {
   return value
     .split(',')
@@ -16,7 +17,232 @@ function parseTagsInput(value: string): string[] {
     .filter(Boolean);
 }
 
+// کامپوننت ویرایشگر سفارشی
+interface CustomEditorProps {
+  value: string;
+  onChange: (html: string) => void;
+  placeholder?: string;
+  minHeight?: string;
+}
+
+function CustomEditor({ value, onChange, placeholder, minHeight = '280px' }: CustomEditorProps) {
+  const editorRef = useRef<HTMLDivElement>(null);
+  const [selectedColor, setSelectedColor] = useState('#000000');
+  const [selectedBgColor, setSelectedBgColor] = useState('#ffffff');
+
+  // اعمال دستورات قالب‌بندی
+  const execCommand = (command: string, value: string | undefined = undefined) => {
+    document.execCommand(command, false, value);
+    // بعد از تغییر، محتوای جدید را از طریق onChange برگردان
+    if (editorRef.current) {
+      onChange(editorRef.current.innerHTML);
+    }
+    editorRef.current?.focus();
+  };
+
+  // درج لینک
+  const insertLink = () => {
+    const url = prompt('آدرس لینک را وارد کنید:', 'https://');
+    if (url) {
+      execCommand('createLink', url);
+    }
+  };
+
+  // درج تصویر
+  const insertImage = () => {
+    const url = prompt('آدرس تصویر را وارد کنید:', 'https://');
+    if (url) {
+      execCommand('insertImage', url);
+    }
+  };
+
+  // تغییر رنگ متن
+  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const color = e.target.value;
+    setSelectedColor(color);
+    execCommand('foreColor', color);
+  };
+
+  // تغییر رنگ پس‌زمینه
+  const handleBgColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const color = e.target.value;
+    setSelectedBgColor(color);
+    execCommand('backColor', color);
+  };
+
+  // رویداد برای به‌روزرسانی state هنگام ورود مستقیم HTML
+  const handleEditorInput = () => {
+    if (editorRef.current) {
+      onChange(editorRef.current.innerHTML);
+    }
+  };
+
+  // مقداردهی اولیه
+  useEffect(() => {
+    if (editorRef.current && editorRef.current.innerHTML !== value) {
+      editorRef.current.innerHTML = value;
+    }
+  }, [value]);
+
+  return (
+    <div className="border border-white/10 rounded-lg overflow-hidden bg-white text-black">
+      {/* نوار ابزار */}
+      <div className="flex flex-wrap items-center gap-1 p-2 bg-gray-100 border-b border-gray-300">
+        <button
+          type="button"
+          onClick={() => execCommand('bold')}
+          className="p-1 hover:bg-gray-200 rounded w-8 h-8 flex items-center justify-center font-bold"
+          title="پررنگ"
+        >
+          B
+        </button>
+        <button
+          type="button"
+          onClick={() => execCommand('italic')}
+          className="p-1 hover:bg-gray-200 rounded w-8 h-8 flex items-center justify-center italic"
+          title="کج"
+        >
+          I
+        </button>
+        <button
+          type="button"
+          onClick={() => execCommand('underline')}
+          className="p-1 hover:bg-gray-200 rounded w-8 h-8 flex items-center justify-center underline"
+          title="زیرخط"
+        >
+          U
+        </button>
+        <button
+          type="button"
+          onClick={() => execCommand('strikeThrough')}
+          className="p-1 hover:bg-gray-200 rounded w-8 h-8 flex items-center justify-center line-through"
+          title="خط‌خورده"
+        >
+          S
+        </button>
+        <span className="w-px h-6 bg-gray-300 mx-1"></span>
+
+        {/* رنگ متن */}
+        <div className="relative group">
+          <button
+            type="button"
+            className="p-1 hover:bg-gray-200 rounded w-8 h-8 flex items-center justify-center"
+            title="رنگ متن"
+          >
+            <span className="w-4 h-4 rounded-full" style={{ backgroundColor: selectedColor }}></span>
+          </button>
+          <input
+            type="color"
+            value={selectedColor}
+            onChange={handleColorChange}
+            className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+          />
+        </div>
+
+        {/* رنگ پس‌زمینه */}
+        <div className="relative group">
+          <button
+            type="button"
+            className="p-1 hover:bg-gray-200 rounded w-8 h-8 flex items-center justify-center"
+            title="رنگ پس‌زمینه"
+          >
+            <span className="w-4 h-4 border border-gray-400" style={{ backgroundColor: selectedBgColor }}></span>
+          </button>
+          <input
+            type="color"
+            value={selectedBgColor}
+            onChange={handleBgColorChange}
+            className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+          />
+        </div>
+        <span className="w-px h-6 bg-gray-300 mx-1"></span>
+
+        <button
+          type="button"
+          onClick={() => execCommand('insertOrderedList')}
+          className="p-1 hover:bg-gray-200 rounded w-8 h-8 flex items-center justify-center"
+          title="لیست شماره‌دار"
+        >
+          1.
+        </button>
+        <button
+          type="button"
+          onClick={() => execCommand('insertUnorderedList')}
+          className="p-1 hover:bg-gray-200 rounded w-8 h-8 flex items-center justify-center"
+          title="لیست نقطه‌ای"
+        >
+          • 
+        </button>
+        <span className="w-px h-6 bg-gray-300 mx-1"></span>
+
+        <button
+          type="button"
+          onClick={() => execCommand('formatBlock', 'blockquote')}
+          className="p-1 hover:bg-gray-200 rounded px-2 text-sm"
+          title="نقل‌قول"
+        >
+          نقل‌قول
+        </button>
+        <button
+          type="button"
+          onClick={() => execCommand('formatBlock', 'pre')}
+          className="p-1 hover:bg-gray-200 rounded px-2 text-sm"
+          title="کد"
+        >
+          کد
+        </button>
+        <span className="w-px h-6 bg-gray-300 mx-1"></span>
+
+        <button
+          type="button"
+          onClick={insertLink}
+          className="p-1 hover:bg-gray-200 rounded w-8 h-8 flex items-center justify-center"
+          title="لینک"
+        >
+          🔗
+        </button>
+        <button
+          type="button"
+          onClick={insertImage}
+          className="p-1 hover:bg-gray-200 rounded w-8 h-8 flex items-center justify-center"
+          title="تصویر"
+        >
+          🖼️
+        </button>
+        <span className="w-px h-6 bg-gray-300 mx-1"></span>
+
+        <button
+          type="button"
+          onClick={() => execCommand('removeFormat')}
+          className="p-1 hover:bg-gray-200 rounded px-2 text-sm"
+          title="پاک‌سازی قالب‌بندی"
+        >
+          پاک‌سازی
+        </button>
+      </div>
+
+      {/* ناحیه ویرایش */}
+      <div
+        ref={editorRef}
+        contentEditable
+        onInput={handleEditorInput}
+        onBlur={handleEditorInput}
+        className="p-3 outline-none text-black"
+        style={{ minHeight, direction: 'rtl', textAlign: 'right' }}
+        data-placeholder={placeholder}
+        suppressContentEditableWarning={true}
+      />
+      {!value && (
+        <div className="text-gray-400 text-sm p-3 pointer-events-none" style={{ marginTop: `-${minHeight}` }}>
+          {placeholder}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function BlogAdminPage() {
+  // باقی useState‌ها و منطق بدون تغییر می‌ماند
   const { user } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('posts');
@@ -43,6 +269,7 @@ export default function BlogAdminPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // useEffect و بقیه توابع مانند قبل باقی می‌مانند
   useEffect(() => {
     if (!user || user.email !== ADMIN_EMAIL) {
       navigate('/');
@@ -319,7 +546,7 @@ export default function BlogAdminPage() {
                       onChange={() => setContentMode('rich')}
                       className="text-primary"
                     />
-                    <span className="text-gray-200">ویرایشگر متنی (شبیه ورد) — متن، لینک، تصویر، عنوان و...</span>
+                    <span className="text-gray-200">ویرایشگر متنی (پیشرفته) — رنگ متن، پس‌زمینه، لیست، لینک، تصویر و...</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -332,11 +559,12 @@ export default function BlogAdminPage() {
                     <span className="text-gray-200">ورود مستقیم HTML</span>
                   </label>
                 </div>
+
                 {contentMode === 'rich' ? (
-                  <RichTextEditor
+                  <CustomEditor
                     value={postForm.content_html || ''}
                     onChange={(html) => setPostForm((prev) => ({ ...prev, content_html: html }))}
-                    placeholder="متن پست را اینجا بنویسید. از نوار بالا برای بولد، لینک، تصویر و..."
+                    placeholder="متن پست را اینجا بنویسید. از نوار بالا برای قالب‌بندی استفاده کنید..."
                     minHeight="280px"
                   />
                 ) : (
@@ -350,6 +578,7 @@ export default function BlogAdminPage() {
                   />
                 )}
               </div>
+
               <input
                 name="tags_input"
                 type="text"
@@ -398,7 +627,7 @@ export default function BlogAdminPage() {
               </div>
             </form>
 
-            {/* Posts table */}
+            {/* جدول پست‌ها */}
             <div className="overflow-x-auto">
               <table className="min-w-full text-xs md:text-sm text-gray-200">
                 <thead>
@@ -634,4 +863,3 @@ export default function BlogAdminPage() {
     </div>
   );
 }
-
